@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Visual Lab PRO · MJ Engine</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#060608;
+  --s1:#0d0d12;
+  --s2:#13131a;
+  --s3:#1a1a24;
+  --s4:#22222e;
+  --border:#1e1e2a;
+  --border2:#2a2a3a;
+  --text:#f0f0f8;
+  --text2:#7070a0;
+  --text3:#3a3a5a;
+  --acc:#e0365c;
+  --acc2:#36e08a;
+  --acc3:#3670e0;
+  --acc4:#e08036;
+  --kimi:#a855f7;
+  --kimi2:#7c3aed;
+  --glow-r:rgba(224,54,92,0.15);
+  --glow-g:rgba(54,224,138,0.12);
+  --glow-p:rgba(168,85,247,0.15);
+}
+
+body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);line-height:1.5;min-height:100vh;overflow-x:hidden}
+code,pre,.mono{font-family:'JetBrains Mono',monospace}
+
+/* ── GRID LAYOUT ─────────────────────────────── */
+.app-shell{display:grid;grid-template-rows:56px 1fr;min-height:100vh}
+
+/* ── HEADER ──────────────────────────────────── */
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 20px;
+  background:rgba(6,6,8,0.95);
+  border-bottom:1px solid var(--border2);
+  backdrop-filter:blur(12px);
+  position:sticky;top:0;z-index:200;
+}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-name{font-size:15px;font-weight:800;letter-spacing:-0.3px;color:var(--text)}
+.brand-tag{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  color:var(--acc);border:1px solid var(--acc);padding:2px 7px;border-radius:4px}
+.topbar-status{font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace}
+.status-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--acc2);margin-right:5px;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+
+/* ── MAIN CONTENT ────────────────────────────── */
+.main{display:grid;grid-template-columns:52px 1fr;height:calc(100vh - 56px)}
+
+/* ── SIDEBAR NAV ─────────────────────────────── */
+.sidenav{
+  display:flex;flex-direction:column;align-items:center;gap:2px;
+  padding:12px 0;
+  background:var(--s1);
+  border-right:1px solid var(--border);
+  position:sticky;top:56px;height:calc(100vh - 56px);
+  overflow-y:auto;
+}
+.nav-item{
+  width:40px;height:40px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  border-radius:10px;cursor:pointer;
+  font-size:18px;
+  color:var(--text3);
+  transition:all .2s;
+  border:1px solid transparent;
+  position:relative;
+}
+.nav-item:hover{background:var(--s3);color:var(--text2)}
+.nav-item.active{background:var(--s3);border-color:var(--border2);color:var(--text)}
+.nav-item.active.forge{color:var(--acc)}
+.nav-item.active.native{color:var(--kimi)}
+.nav-item.active.builder{color:var(--acc3)}
+.nav-item.active.vars{color:var(--acc4)}
+.nav-item.active.log{color:var(--acc2)}
+.nav-item .nav-label{font-size:7px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+.nav-divider{width:24px;height:1px;background:var(--border);margin:6px 0}
+
+/* ── CONTENT AREA ────────────────────────────── */
+.content-area{overflow-y:auto;height:calc(100vh - 56px)}
+.panel{display:none;animation:slideIn .25s ease}
+.panel.active{display:block}
+@keyframes slideIn{from{opacity:0;transform:translateX(8px)}to{opacity:1;transform:translateX(0)}}
+
+/* ── PANEL LAYOUT ────────────────────────────── */
+.panel-inner{padding:20px;max-width:900px;margin:0 auto;padding-bottom:40px}
+.panel-header{margin-bottom:24px}
+.panel-title{font-size:22px;font-weight:800;letter-spacing:-0.5px}
+.panel-sub{font-size:12px;color:var(--text2);margin-top:4px;font-family:'JetBrains Mono',monospace}
+
+/* ── FORGE LAYOUT ────────────────────────────── */
+.forge-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:640px){.forge-grid{grid-template-columns:1fr}}
+
+/* ── CARDS ───────────────────────────────────── */
+.card{background:var(--s1);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:14px}
+.card-title{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text2);margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}
+.card-accent-r{border-left:2px solid var(--acc)}
+.card-accent-p{border-left:2px solid var(--kimi)}
+.card-accent-b{border-left:2px solid var(--acc3)}
+.card-accent-g{border-left:2px solid var(--acc2)}
+
+/* ── INPUTS ──────────────────────────────────── */
+textarea,input[type="text"],input[type="number"],select{
+  width:100%;
+  background:var(--s2);
+  border:1px solid var(--border2);
+  border-radius:10px;
+  padding:12px 14px;
+  color:var(--text);
+  font-size:14px;
+  font-family:'Syne',sans-serif;
+  outline:none;
+  resize:vertical;
+  transition:border-color .2s;
+}
+textarea:focus,input:focus,select:focus{border-color:var(--acc)}
+textarea{min-height:90px;line-height:1.6}
+.mono-input{font-family:'JetBrains Mono',monospace;font-size:13px}
+select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='%237070a0' d='M5 7L1 3h8z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px}
+
+/* ── BUTTONS ─────────────────────────────────── */
+.btn{
+  padding:13px 20px;border:none;border-radius:11px;
+  font-size:13px;font-weight:700;letter-spacing:.5px;
+  cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  font-family:'Syne',sans-serif;transition:all .15s;
+}
+.btn:active{transform:scale(0.97)}
+.btn-primary{background:var(--acc);color:#fff;width:100%}
+.btn-primary:hover{background:#f0405f}
+.btn-kimi{background:var(--kimi);color:#fff;width:100%}
+.btn-kimi:hover{background:var(--kimi2)}
+.btn-ghost{background:var(--s3);border:1px solid var(--border2);color:var(--text2)}
+.btn-ghost:hover{border-color:var(--acc);color:var(--acc)}
+.btn-win{background:var(--s2);border:1px solid var(--acc2);color:var(--acc2);padding:10px 16px}
+.btn-fail{background:var(--s2);border:1px solid var(--acc);color:var(--acc);padding:10px 16px}
+.btn-copy{background:var(--s3);border:1px solid var(--border2);color:var(--text);padding:10px 16px}
+.btn-sm{padding:7px 13px;font-size:11px;border-radius:8px}
+
+/* ── CHIPS ───────────────────────────────────── */
+.chip-row{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px}
+.chip{
+  padding:8px 14px;
+  background:var(--s2);border:1px solid var(--border2);border-radius:20px;
+  font-size:12px;font-weight:600;cursor:pointer;color:var(--text2);
+  transition:all .15s;user-select:none;
+}
+.chip:hover{border-color:var(--acc);color:var(--acc)}
+.chip.on{background:var(--acc);border-color:var(--acc);color:#fff}
+.chip.on-p{background:var(--kimi);border-color:var(--kimi);color:#fff}
+.chip.on-g{background:var(--acc2);border-color:var(--acc2);color:#000}
+.chip-single .chip.on{background:var(--acc3);border-color:var(--acc3)}
+
+/* ── TOGGLE ROW ──────────────────────────────── */
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--border)}
+.toggle-row:last-child{border-bottom:none}
+.tl{font-size:13px;font-weight:600}
+.tl small{display:block;font-size:11px;color:var(--text2);font-weight:400;margin-top:2px}
+input[type="checkbox"]{width:38px;height:22px;appearance:none;background:var(--s3);border:1px solid var(--border2);border-radius:11px;cursor:pointer;position:relative;transition:background .2s}
+input[type="checkbox"]::after{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;background:var(--text3);border-radius:8px;transition:all .2s}
+input[type="checkbox"]:checked{background:var(--acc);border-color:var(--acc)}
+input[type="checkbox"]:checked::after{left:18px;background:#fff}
+
+/* ── PROMPT OUTPUT ───────────────────────────── */
+.prompt-out{
+  background:var(--s2);border:1px solid var(--border2);border-radius:10px;
+  padding:14px;font-family:'JetBrains Mono',monospace;font-size:12px;
+  line-height:1.7;color:var(--text);word-break:break-word;
+  min-height:60px;position:relative;
+}
+.prompt-out .params{color:var(--acc3)}
+.prompt-out .actress{color:var(--acc)}
+.prompt-out .phys{color:var(--acc2)}
+.out-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.out-meta{font-size:10px;color:var(--text3);margin-top:6px;font-family:'JetBrains Mono',monospace}
+
+/* ── VARIATION CARDS ─────────────────────────── */
+.var-grid{display:grid;grid-template-columns:1fr;gap:12px}
+.var-card{
+  background:var(--s1);border:1px solid var(--border);border-radius:12px;padding:14px;
+  transition:border-color .2s;
+}
+.var-card:hover{border-color:var(--border2)}
+.var-label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--acc4);margin-bottom:8px;display:flex;justify-content:space-between}
+.var-tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px}
+.var-tag{font-size:9px;padding:2px 7px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-weight:700}
+.vt-s{background:rgba(54,112,224,0.15);color:var(--acc3)}
+.vt-c{background:rgba(224,128,54,0.15);color:var(--acc4)}
+.vt-l{background:rgba(168,85,247,0.15);color:var(--kimi)}
+
+/* ── LOG ─────────────────────────────────────── */
+.log-entry{
+  display:flex;align-items:center;gap:12px;
+  padding:12px;background:var(--s1);border:1px solid var(--border);border-radius:10px;
+  margin-bottom:8px;
+}
+.log-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.log-dot.win{background:var(--acc2)}
+.log-dot.fail{background:var(--acc)}
+.log-info{flex:1;min-width:0}
+.log-text{font-size:12px;font-family:'JetBrains Mono',monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text)}
+.log-date{font-size:10px;color:var(--text3);margin-top:2px}
+.log-copy{padding:5px 10px;font-size:10px;background:var(--s3);border:1px solid var(--border2);color:var(--text2);border-radius:6px;cursor:pointer;font-family:'Syne',sans-serif;font-weight:700}
+
+/* ── INLINE CONTROL ──────────────────────────── */
+.row{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.row label{font-size:11px;color:var(--text2);font-weight:700;min-width:80px;flex-shrink:0}
+.row select,.row input{flex:1;min-width:120px}
+
+/* ── REF TABLES ──────────────────────────────── */
+.ref-table{width:100%;border-collapse:collapse;font-size:11px;margin:10px 0;font-family:'JetBrains Mono',monospace}
+.ref-table th{background:var(--s3);padding:7px 10px;text-align:left;border:1px solid var(--border);color:var(--text2);font-weight:700;letter-spacing:.5px}
+.ref-table td{padding:7px 10px;border:1px solid var(--border);color:var(--text3)}
+.ref-table .opt{color:var(--acc2);font-weight:700}
+.ref-table .bad{color:var(--acc);font-weight:700}
+
+/* ── TIP ─────────────────────────────────────── */
+.tip{
+  background:var(--s2);border-left:2px solid var(--acc3);
+  padding:10px 12px;border-radius:0 8px 8px 0;margin:10px 0;
+  font-size:12px;color:var(--text2);
+}
+.tip strong{color:var(--acc3)}
+
+/* ── LOADING ─────────────────────────────────── */
+.spinner{
+  display:inline-block;width:14px;height:14px;
+  border:2px solid transparent;border-top-color:currentColor;
+  border-radius:50%;animation:spin .6s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── TOAST ───────────────────────────────────── */
+.toast{
+  position:fixed;bottom:24px;left:50%;
+  transform:translateX(-50%) translateY(20px);
+  background:var(--s3);border:1px solid var(--border2);
+  color:var(--text);padding:10px 20px;border-radius:10px;
+  font-size:13px;font-weight:700;z-index:999;
+  opacity:0;transition:all .25s;pointer-events:none;
+}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+
+/* ── BLOCKS/BUILDER SPECIFIC ─────────────────── */
+.section-grid{display:grid;gap:10px}
+.duo-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.duo-chip{padding:7px 12px;background:var(--s2);border:1px solid var(--border2);border-radius:8px;font-size:11px;cursor:pointer;color:var(--text2);font-weight:700;transition:all .15s}
+.duo-chip:hover{border-color:var(--kimi);color:var(--kimi)}
+
+/* ── NATIVE SECTION ──────────────────────────── */
+.native-input-area{
+  background:var(--s2);border:1px solid var(--kimi);border-radius:12px;
+  padding:16px;font-size:15px;min-height:100px;margin-bottom:12px;
+}
+.kimi-badge{display:inline-block;background:var(--kimi);color:#fff;font-size:9px;padding:2px 8px;border-radius:4px;font-weight:700;margin-bottom:8px;letter-spacing:1px}
+
+/* ── SETTINGS PAGE ───────────────────────────── */
+.settings-row{display:flex;justify-content:space-between;align-items:center;padding:13px 0;border-bottom:1px solid var(--border)}
+.settings-label{font-size:13px;font-weight:600}
+.settings-label small{display:block;font-size:11px;color:var(--text2);margin-top:2px;font-weight:400}
+.settings-val{font-size:12px;font-family:'JetBrains Mono',monospace;color:var(--acc)}
+
+/* ── EMPTY STATE ─────────────────────────────── */
+.empty{text-align:center;padding:40px 20px;color:var(--text3)}
+.empty-icon{font-size:40px;margin-bottom:12px;opacity:.4}
+.empty-text{font-size:13px}
+</style>
+</head>
+<body>
+<div class="app-shell">
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-name">Visual Lab PRO</div>
+    <div class="brand-tag">MJ · v9</div>
+  </div>
+  <div class="topbar-status"><span class="status-dot"></span><span id="apiStatus">connecting...</span></div>
+</header>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- SIDENAV -->
+  <nav class="sidenav">
+    <div class="nav-item active forge" data-tab="forge" onclick="tab('forge',this)">
+      <span>⚗️</span><span class="nav-label">Forge</span>
+    </div>
+    <div class="nav-item native" data-tab="native" onclick="tab('native',this)">
+      <span>🧠</span><span class="nav-label">NL</span>
+    </div>
+    <div class="nav-item builder" data-tab="builder" onclick="tab('builder',this)">
+      <span>🏗️</span><span class="nav-label">Build</span>
+    </div>
+    <div class="nav-divider"></div>
+    <div class="nav-item vars" data-tab="vars" onclick="tab('vars',this)">
+      <span>🔀</span><span class="nav-label">Vars</span>
+    </div>
+    <div class="nav-divider"></div>
+    <div class="nav-item log" data-tab="log" onclick="tab('log',this)">
+      <span>📝</span><span class="nav-label">Log</span>
+    </div>
+    <div class="nav-item" data-tab="ref" onclick="tab('ref',this)">
+      <span>📊</span><span class="nav-label">Ref</span>
+    </div>
+    <div class="nav-item" data-tab="settings" onclick="tab('settings',this)">
+      <span>⚙️</span><span class="nav-label">Cfg</span>
+    </div>
+  </nav>
+
+  <!-- CONTENT -->
+  <div class="content-area">
+
+    <!-- ══ FORGE ══════════════════════════════ -->
+    <div class="panel active" id="panel-forge">
+    <div class="panel-inner">
+      <div class="panel-header">
+        <div class="panel-title">Forge</div>
+        <div class="panel-sub">Paste base prompt → generate variations</div>
+      </div>
+
+      <div class="card card-accent-r">
+        <div class="card-title">BASE PROMPT</div>
+        <textarea id="basePrompt" class="mono-input" placeholder="Cinematic full-body portrait of Anya Taylor-Joy, female, 6'2&quot; extreme torso elongation 70:30, tactical bikini, void black..."></textarea>
+      </div>
+
+      <div class="card">
+        <div class="card-title">MODIFIERS</div>
+        <div class="toggle-row">
+          <div class="tl">Brutal Physique<small>Inject hyper-musculature hierarchy</small></div>
+          <input type="checkbox" id="brutalMode" checked>
+        </div>
+        <div class="toggle-row">
+          <div class="tl">AR 9:20 Lock<small>Force phone wallpaper ratio</small></div>
+          <input type="checkbox" id="arLock" checked>
+        </div>
+        <div class="toggle-row">
+          <div class="tl">Kimi Engineering<small>Apply PERA-v1 MJ prompt rules</small></div>
+          <input type="checkbox" id="kimiMode" checked>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">QUICK PRESETS</div>
+        <div class="chip-row">
+          <div class="chip" onclick="loadPreset('anya')">Anya Void</div>
+          <div class="chip" onclick="loadPreset('tessa')">Tessa Storm</div>
+          <div class="chip" onclick="loadPreset('duo')">Duo Close</div>
+          <div class="chip" onclick="loadPreset('ana')">Ana Rooftop</div>
+          <div class="chip" onclick="loadPreset('zoe')">Zoe Space</div>
+        </div>
+      </div>
+
+      <button class="btn btn-primary" onclick="goToVars()">Generate Variations →</button>
+    </div>
+    </div>
+
+    <!-- ══ NATIVE TRANSLATOR ═══════════════════ -->
+    <div class="panel" id="panel-native">
+    <div class="panel-inner">
+      <div class="panel-header">
+        <div class="panel-title">Native Translator</div>
+        <div class="panel-sub">Write in any language → optimized MJ prompt</div>
+      </div>
+
+      <div class="card card-accent-p">
+        <div class="card-title">INPUT — WRITE FREELY</div>
+        <textarea class="native-input-area" id="nativeInput" placeholder="Tessa Thompson mojada brutal en desierto tactical... Anya en void con luz de 45° sin relleno..."></textarea>
+        <button class="btn btn-kimi" onclick="translate()">
+          <span id="translateSpinner" style="display:none" class="spinner"></span>
+          Translate → MJ Prompt
+        </button>
+      </div>
+
+      <div id="nativeOutput"></div>
+
+      <div class="card">
+        <div class="card-title">KIMI NATIVE RULES</div>
+        <div class="tip"><strong>Stylize Inverse:</strong> Lower = more realism. 240–250 = hard cinema sweet spot.</div>
+        <div class="tip"><strong>Physique Priority:</strong> Must be in first 10 tokens or MJ drifts.</div>
+        <div class="tip"><strong>Token Budget:</strong> Keep active tokens &lt; 40. Short beats long.</div>
+        <div class="tip"><strong>Light Specific:</strong> "Hard 45° sun" beats "dramatic lighting" by miles.</div>
+        <div class="tip"><strong>Subject Competition:</strong> 1 subject = max detail. 2 = optimal drama.</div>
+      </div>
+    </div>
+    </div>
+
+    <!-- ══ BUILDER ══════════════════════════════ -->
+    <div class="panel" id="panel-builder">
+    <div class="panel-inner">
+      <div class="panel-header">
+        <div class="panel-title">Builder</div>
+        <div class="panel-sub">Structured → MJ prompt with optimal hierarchy</div>
+      </div>
+
+      <div class="card card-accent-b">
+        <div class="card-title">SUBJECTS</div>
+        <div class="row">
+          <label>Count</label>
+          <select id="bSubjQty" onchange="updateSubjBlocks()">
+            <option>1</option><option>2</option><option>3</option><option>4</option>
+          </select>
+        </div>
+        <div id="bSubjBlock1">
+          <div class="row"><label>Actress 1</label><select id="bActress1"></select></div>
+          <div class="row"><label>Character</label>
+            <select id="bChar1"><option>Original</option><option>Wonder Woman</option><option>Supergirl</option><option>Batgirl</option><option>Black Widow</option><option>Storm</option><option>Catwoman</option><option>Harley Quinn</option></select>
+          </div>
+        </div>
+        <div id="bSubjBlock2" style="display:none">
+          <div class="row"><label>Actress 2</label><select id="bActress2"></select></div>
+          <div class="row"><label>Character</label>
+            <select id="bChar2"><option>Original</option><option>Wonder Woman</option><option>Supergirl</option><option>Batgirl</option><option>Black Widow</option><option>Storm</option><option>Catwoman</option><option>Harley Quinn</option></select>
+          </div>
+        </div>
+        <div class="row"><label>Physique</label>
+          <select id="bPhys"><option value="brutal">Brutal Defined</option><option value="athletic">Athletic</option><option value="curves">Curves</option></select>
+        </div>
+        <div class="row"><label>Height</label>
+          <select id="bHeight"><option>6'2"</option><option>6'3"</option><option>6'4"</option><option>5'11"</option></select>
+        </div>
+        <div class="row"><label>Ratio</label>
+          <select id="bRatio"><option>70:30</option><option>65:35</option><option>75:25</option></select>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">CLOTHING</div>
+        <div class="row"><label>Base</label>
+          <select id="bClothBase"><option>tactical bikini</option><option>sports bra + shorts</option><option>bodysuit</option><option>armor plate</option><option>wet clothing</option><option>duster jacket</option><option>tactical suit</option></select>
+        </div>
+        <div class="row"><label>Color</label>
+          <select id="bClothColor"><option>Black</option><option>Red</option><option>White</option><option>Gold</option><option>Blue</option><option>Olive</option><option>Indigo</option><option>Gray</option></select>
+        </div>
+        <div class="row"><label>Material</label>
+          <select id="bClothMat"><option>Latex</option><option>Mesh</option><option>Neoprene</option><option>Leather</option><option>Carbon fiber</option><option>Silk</option></select>
+        </div>
+        <div class="row"><label>State</label>
+          <select id="bClothState"><option>Sweat</option><option>Wet</option><option>Dusty</option><option>Intact</option><option>Torn</option><option>Oiled</option></select>
+        </div>
+        <div class="row"><label>Emblem</label>
+          <select id="bEmblem"><option>None</option><option>Eagle</option><option>S-shield</option><option>Bat</option><option>Star</option><option>Diamond</option><option>Skull</option></select>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">ENVIRONMENT & LIGHT</div>
+        <div class="row"><label>Scene</label>
+          <select id="bScene"><option>void</option><option>desert</option><option>rooftop</option><option>rain street</option><option>gym</option><option>space</option><option>arctic</option><option>jungle</option></select>
+        </div>
+        <div class="row"><label>Time</label>
+          <select id="bTime"><option>Night</option><option>Golden hour</option><option>Midday</option><option>Blue hour</option><option>Dawn</option></select>
+        </div>
+        <div class="row"><label>Light</label>
+          <select id="bLight"><option value="45deg">Hard 45°</option><option value="side">Split Side</option><option value="back">Backlight</option><option value="golden">Golden Rim</option><option value="studio">Studio</option><option value="neon">Neon Cyber</option></select>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">CAMERA</div>
+        <div class="row"><label>Lens</label>
+          <select id="bLens"><option>50mm</option><option>85mm</option><option>35mm</option><option>24mm</option><option>100mm</option></select>
+        </div>
+        <div class="row"><label>Aperture</label>
+          <select id="bAp"><option>f/2.8</option><option>f/1.8</option><option>f/4</option><option>f/5.6</option></select>
+        </div>
+        <div class="row"><label>Stylize</label>
+          <select id="bStylize"><option value="250">250 — Cinema</option><option value="240">240 — Raw</option><option value="280">280 — Balanced</option><option value="400">400 — Epic</option></select>
+        </div>
+      </div>
+
+      <button class="btn btn-primary" onclick="buildPrompt()">Build Prompt →</button>
+      <div id="builderOutput" style="margin-top:14px"></div>
+    </div>
+    </div>
+
+    <!-- ══ VARIATIONS ═══════════════════════════ -->
+    <div class="panel" id="panel-vars">
+    <div class="panel-inner">
+      <div class="panel-header">
+        <div class="panel-title">Variations</div>
+        <div class="panel-sub">4 light × stylize cross-variations from base</div>
+      </div>
+
+      <div class="card card-accent-r" id="varsBase" style="display:none">
+        <div class="card-title">BASE PROMPT</div>
+        <div class="prompt-out mono" id="varsBasePrompt"></div>
+      </div>
+
+      <div id="variationsContainer">
+        <div class="empty">
+          <div class="empty-icon">🔀</div>
+          <div class="empty-text">Paste a prompt in Forge and tap "Generate Variations"</div>
+        </div>
+      </div>
+    </div>
+    </div>
+
+    <!-- ══ LOG ══════════════════════════════════ -->
+    <div class="panel" id="panel-log">
+    <div class="panel-inner">
+      <div class="panel-header">
+        <div class="panel-title">Log</div>
+        <div class="panel-sub">Win/fail tracking · session history</div>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:16px">
+        <button class="btn btn-ghost btn-sm" onclick="clearLog()">Clear</button>
+        <button class="btn btn-ghost btn-sm" onclick="exportLog()">Export JSON</button>
+        <button class="btn btn-ghost btn-sm" onclick="loadLog()">Refresh</button>
+      </div>
+      <div id="logContainer">
+        <div class="empty"><div class="empty-icon">📝</div><div class="empty-text">No entries yet</div></div>
+      </div>
+    </div>
+    </div>
+
+    <!-- ══ REFERENCE ════════════════════════════ -->
+    <div class="panel" id="panel-ref">
+    <div class="panel-inner">
+      <div class="panel-header">
+        <div class="panel-title">Reference</div>
+        <div class="panel-sub">MJ parameter cheatsheet</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">STYLIZE VALUES</div>
+        <table class="ref-table">
+          <tr><th>--s</th><th>Realism</th><th>Detail</th><th>Use case</th></tr>
+          <tr><td>400</td><td class="bad">Low</td><td class="bad">Low</td><td>Fantasy/epic poster</td></tr>
+          <tr><td>280</td><td>Medium</td><td>Medium</td><td>Balanced cinematic</td></tr>
+          <tr><td class="opt">250</td><td class="opt">HIGH</td><td class="opt">HIGH</td><td class="opt">Cinema sweet spot ★</td></tr>
+          <tr><td>240</td><td>Max</td><td>Max</td><td>Raw crudo, extreme pores</td></tr>
+          <tr><td>200</td><td class="bad">Extreme</td><td class="bad">Extreme</td><td class="bad">Docu risk — fealdad</td></tr>
+        </table>
+      </div>
+
+      <div class="card">
+        <div class="card-title">SUBJECT COUNT</div>
+        <table class="ref-table">
+          <tr><th>Subjects</th><th>Detail/body</th><th>Use</th></tr>
+          <tr><td class="opt">1</td><td class="opt">MAXIMUM</td><td class="opt">Fotoshoot puro, void ★</td></tr>
+          <tr><td class="opt">2</td><td class="opt">OPTIMAL</td><td class="opt">Drama, interaction ★</td></tr>
+          <tr><td>4</td><td>Medium</td><td>Epic fantasy formation</td></tr>
+        </table>
+      </div>
+
+      <div class="card">
+        <div class="card-title">CHAOS VALUES</div>
+        <table class="ref-table">
+          <tr><th>--c</th><th>Variation</th><th>Use</th></tr>
+          <tr><td>5</td><td>Locked tight</td><td>Reproducibility test</td></tr>
+          <tr><td class="opt">15</td><td class="opt">Optimal drift</td><td class="opt">Production default ★</td></tr>
+          <tr><td>25</td><td>High variation</td><td>Exploration</td></tr>
+          <tr><td>40+</td><td class="bad">Chaos</td><td class="bad">Experimental only</td></tr>
+        </table>
+      </div>
+
+      <div class="card">
+        <div class="card-title">TOKEN PRIORITY ORDER</div>
+        <div class="tip"><strong>1.</strong> Subject identity (actress + stature)</div>
+        <div class="tip"><strong>2.</strong> Physique definition (abs → must be in first 10 tokens)</div>
+        <div class="tip"><strong>3.</strong> Clothing / state</div>
+        <div class="tip"><strong>4.</strong> Environment / setting</div>
+        <div class="tip"><strong>5.</strong> Lighting (specific angle + color)</div>
+        <div class="tip"><strong>6.</strong> Camera (lens + aperture)</div>
+        <div class="tip"><strong>Parameters last:</strong> --ar --raw --stylize --c --v</div>
+      </div>
+    </div>
+    </div>
+
+    <!-- ══ SETTINGS ══════════════════════════════ -->
+    <div class="panel" id="panel-settings">
+    <div class="panel-inner">
+      <div class="panel-header">
+        <div class="panel-title">Config</div>
+        <div class="panel-sub">System settings</div>
+      </div>
+      <div class="card">
+        <div class="card-title">API</div>
+        <div class="settings-row">
+          <div class="settings-label">Backend<small>Auto-detected</small></div>
+          <div class="settings-val" id="cfgApiUrl">—</div>
+        </div>
+        <div class="settings-row">
+          <div class="settings-label">Status<small>Connection health</small></div>
+          <div class="settings-val" id="cfgApiStatus">checking...</div>
+        </div>
+        <div class="settings-row">
+          <div class="settings-label">Mode<small>Cloud vs Local</small></div>
+          <div class="settings-val" id="cfgMode">—</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">DEFAULTS</div>
+        <div class="row"><label>Default AR</label>
+          <select id="cfgAr" onchange="saveConfig()"><option value="9:20">9:20</option><option value="9:16">9:16</option><option value="4:5">4:5</option><option value="1:1">1:1</option></select>
+        </div>
+        <div class="row"><label>Default --s</label>
+          <select id="cfgStylize" onchange="saveConfig()"><option value="250">250</option><option value="240">240</option><option value="280">280</option><option value="400">400</option></select>
+        </div>
+        <div class="row"><label>Default --c</label>
+          <select id="cfgChaos" onchange="saveConfig()"><option value="15">15</option><option value="5">5</option><option value="20">20</option><option value="35">35</option></select>
+        </div>
+      </div>
+      <button class="btn btn-ghost" onclick="clearStorage()" style="margin-top:10px">Clear All Local Data</button>
+    </div>
+    </div>
+
+  </div><!-- /content-area -->
+</div><!-- /main -->
+</div><!-- /app-shell -->
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── CONFIG ────────────────────────────────────────────────────
+const API = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+  ? 'http://localhost:3000'
+  : '';  // same-origin on Render
+
+let CFG = { ar: '9:20', stylize: 250, chaos: 15 };
+let LOG = [];
+
+// ── ACTRESSES ─────────────────────────────────────────────────
+const ACTRESSES = [
+  'Anya Taylor-Joy','Tessa Thompson','Zoe Saldana','Gal Gadot','Lupita Nyongo',
+  'Priyanka Chopra','Salma Hayek','Eva Green','Cate Blanchett','Charlize Theron',
+  'Margot Robbie','Brie Larson','Scarlett Johansson','Jennifer Lawrence','Viola Davis',
+  'Halle Berry','Naomi Scott','Michelle Rodriguez','Emilia Clarke','Daisy Ridley',
+  'Pom Klementieff','Karen Gillan','Letitia Wright','Elizabeth Olsen','Florence Pugh',
+  'Danai Gurira','Rebecca Ferguson','Tilda Swinton','Angela Bassett','Ana de Armas',
+  'Alexandra Daddario','Kate Beckinsale','Milla Jovovich','Emily Blunt','Zendaya',
+  'Mackenzie Davis','Lena Headey','Carrie-Anne Moss','Uma Thurman','Natalie Portman',
+  'Keira Knightley','Anne Hathaway','Zoe Kravitz','Rachel Weisz','Marion Cotillard',
+  'Penelope Cruz','Monica Bellucci','Sofia Boutella','Noomi Rapace','Florence Kasumba'
+];
+
+// ── INIT ──────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  // Populate actress selects
+  ['bActress1','bActress2'].forEach(id => {
+    const sel = document.getElementById(id);
+    ACTRESSES.forEach(a => {
+      const opt = document.createElement('option');
+      opt.value = opt.textContent = a;
+      sel.appendChild(opt);
+    });
+  });
+
+  loadConfig();
+  checkApi();
+  loadLog();
+});
+
+// ── NAVIGATION ────────────────────────────────────────────────
+function tab(id, el) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  el.classList.add('active');
+  if (id === 'log') renderLog();
+}
+
+// ── API HEALTH ────────────────────────────────────────────────
+async function checkApi() {
+  try {
+    const r = await fetch(API + '/api/health');
+    const d = await r.json();
+    document.getElementById('apiStatus').textContent = 'API · online';
+    document.getElementById('cfgApiStatus').textContent = 'online ✓';
+    document.getElementById('cfgApiUrl').textContent = API || 'same-origin';
+    document.getElementById('cfgMode').textContent = 'Cloud';
+    toast('Visual Lab PRO · online');
+  } catch(e) {
+    document.getElementById('apiStatus').textContent = 'local mode';
+    document.getElementById('cfgApiStatus').textContent = 'offline — local fallback';
+    document.getElementById('cfgMode').textContent = 'Local';
+  }
+}
+
+// ── FORGE ─────────────────────────────────────────────────────
+function loadPreset(name) {
+  const ta = document.getElementById('basePrompt');
+  const PRESETS = {
+    anya: "Cinematic full-body portrait of Anya Taylor-Joy, female, 6'2\" extreme torso elongation 70:30, low-waist tactical bikini with eagle emblem exposing brutal 8-pack, void — pure black, single brutal studio light from 45°, no fill light, Shot on ARRI Alexa 65 Cooke 50mm f/2.8 --ar 9:20 --raw --stylize 250 --c 15 --v 8.1",
+    tessa: "Cinematic full-body portrait of Tessa Thompson, female, 6'3\" extreme torso elongation 70:30, white tactical gear, dust storm desert, golden particles, harsh 90° sunlight, heat haze, Shot on ARRI Alexa 65 Cooke 85mm f/2.8 --ar 9:20 --raw --stylize 250 --c 15 --v 8.1",
+    duo: "Cinematic full-body of Anya Taylor-Joy and Tessa Thompson, both female, both 6'2\" brutal physique, tactical armor, void black background, hard 45° side light creating razor shadows, Shot on ARRI Alexa 65 35mm --ar 9:20 --raw --stylize 250 --c 15 --v 8.1",
+    ana: "Cinematic full-body portrait of Ana de Armas, female, 6'2\" extreme torso elongation, soaked clothing clinging, rooftop golden hour, city skyline bokeh, rim backlight halo, Shot on ARRI Alexa 65 Cooke 50mm f/2.8 --ar 9:20 --raw --stylize 250 --c 15 --v 8.1",
+    zoe: "Cinematic full-body portrait of Zoe Saldana, female, 6'2\" extreme torso elongation, minimal tactical gear, low Earth orbit, planet curvature, stars infinite, zero gravity, cold rim light, Shot on ARRI Alexa 65 50mm --ar 9:20 --raw --stylize 250 --c 20 --v 8.1"
+  };
+  ta.value = PRESETS[name] || '';
+  toast(name + ' loaded');
+}
+
+async function goToVars() {
+  const prompt = document.getElementById('basePrompt').value.trim();
+  if (!prompt) { toast('Paste a prompt first'); return; }
+
+  // Switch to vars tab
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('panel-vars').classList.add('active');
+  document.querySelector('.nav-item[data-tab="vars"]').classList.add('active');
+
+  await generateVariations(prompt);
+}
+
+// ── NATIVE TRANSLATOR ─────────────────────────────────────────
+async function translate() {
+  const input = document.getElementById('nativeInput').value.trim();
+  if (!input) { toast('Write something first'); return; }
+  
+  const spinner = document.getElementById('translateSpinner');
+  spinner.style.display = 'inline-block';
+
+  try {
+    const r = await fetch(API + '/api/translate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: input, ar: CFG.ar, chaos: CFG.chaos, stylize: CFG.stylize })
+    });
+    const d = await r.json();
+    renderNativeOutput(d);
+  } catch(e) {
+    toast('API offline — local fallback');
+    renderNativeOutput(localKimify(input));
+  } finally {
+    spinner.style.display = 'none';
+  }
+}
+
+function renderNativeOutput(data) {
+  const box = document.getElementById('nativeOutput');
+  box.innerHTML = `
+    <div class="card card-accent-p">
+      <div class="kimi-badge">KIMI OUTPUT</div>
+      <div class="prompt-out mono">${esc(data.prompt)}</div>
+      <div class="out-meta">Tokens: ~${data.tokens} · Physique priority: ${data.physiqueFirst ? '✓ YES' : '✗ NO'} · ${data.actress ? data.actress : 'No actress detected'}</div>
+      <div class="out-actions">
+        <button class="btn btn-copy" onclick="copy(${JSON.stringify(data.prompt)})">Copy</button>
+        <button class="btn btn-win" onclick="logEntry(${JSON.stringify(data.prompt)},'win')">✅ Win</button>
+        <button class="btn btn-fail" onclick="logEntry(${JSON.stringify(data.prompt)},'fail')">❌ Fail</button>
+        <button class="btn btn-ghost btn-sm" onclick="sendToVars(${JSON.stringify(data.prompt)})">→ Vars</button>
+      </div>
+    </div>`;
+}
+
+// ── BUILDER ───────────────────────────────────────────────────
+function updateSubjBlocks() {
+  const qty = parseInt(document.getElementById('bSubjQty').value);
+  document.getElementById('bSubjBlock2').style.display = qty >= 2 ? 'block' : 'none';
+}
+
+async function buildPrompt() {
+  const qty = parseInt(document.getElementById('bSubjQty').value);
+  const subjects = [{
+    name: document.getElementById('bActress1').value,
+    height: document.getElementById('bHeight').value,
+    ratio: document.getElementById('bRatio').value
+  }];
+  if (qty >= 2) subjects.push({ name: document.getElementById('bActress2').value });
+
+  const payload = {
+    subjects,
+    physique: { type: document.getElementById('bPhys').value },
+    clothing: {
+      base: document.getElementById('bClothBase').value,
+      color: document.getElementById('bClothColor').value,
+      material: document.getElementById('bClothMat').value,
+      state: document.getElementById('bClothState').value,
+      emblem: document.getElementById('bEmblem').value
+    },
+    environment: {
+      scene: document.getElementById('bScene').value,
+      time: document.getElementById('bTime').value,
+      light: document.getElementById('bLight').value
+    },
+    camera: {
+      lens: document.getElementById('bLens').value,
+      aperture: document.getElementById('bAp').value,
+      stylize: parseInt(document.getElementById('bStylize').value)
+    }
+  };
+
+  try {
+    const r = await fetch(API + '/api/build', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const d = await r.json();
+    renderBuilderOutput(d);
+  } catch(e) {
+    toast('API error');
+  }
+}
+
+function renderBuilderOutput(data) {
+  const box = document.getElementById('builderOutput');
+  box.innerHTML = `
+    <div class="card card-accent-b">
+      <div class="card-title">BUILDER OUTPUT <span style="color:var(--text3)">~${data.tokens} tokens</span></div>
+      <div class="prompt-out mono">${esc(data.prompt)}</div>
+      <div class="out-actions">
+        <button class="btn btn-copy" onclick="copy(${JSON.stringify(data.prompt)})">Copy</button>
+        <button class="btn btn-win" onclick="logEntry(${JSON.stringify(data.prompt)},'win')">✅</button>
+        <button class="btn btn-fail" onclick="logEntry(${JSON.stringify(data.prompt)},'fail')">❌</button>
+        <button class="btn btn-ghost btn-sm" onclick="sendToVars(${JSON.stringify(data.prompt)})">→ Vars</button>
+      </div>
+    </div>`;
+}
+
+// ── VARIATIONS ────────────────────────────────────────────────
+async function generateVariations(prompt) {
+  const container = document.getElementById('variationsContainer');
+  container.innerHTML = '<div class="empty"><div class="spinner" style="width:24px;height:24px;border-color:var(--acc3);border-top-color:var(--acc);margin:0 auto"></div></div>';
+
+  // Show base
+  document.getElementById('varsBase').style.display = 'block';
+  document.getElementById('varsBasePrompt').textContent = prompt;
+
+  try {
+    const r = await fetch(API + '/api/variations', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt, settings: CFG })
+    });
+    const d = await r.json();
+    renderVariations(d.variations);
+  } catch(e) {
+    toast('API error — check server');
+    container.innerHTML = '<div class="empty"><div class="empty-icon">⚠️</div><div class="empty-text">Could not generate variations</div></div>';
+  }
+}
+
+function renderVariations(vars) {
+  const container = document.getElementById('variationsContainer');
+  if (!vars || !vars.length) {
+    container.innerHTML = '<div class="empty"><div class="empty-text">No variations generated</div></div>';
+    return;
+  }
+  container.innerHTML = '';
+  vars.forEach(v => {
+    const div = document.createElement('div');
+    div.className = 'var-card';
+    div.innerHTML = `
+      <div class="var-label"><span>VAR ${v.id}</span><span>${v.label}</span></div>
+      <div class="var-tags">
+        <span class="var-tag vt-s">s${v.tags.stylize}</span>
+        <span class="var-tag vt-c">c${v.tags.chaos}</span>
+        <span class="var-tag vt-l">${v.tags.light}</span>
+      </div>
+      <div class="prompt-out mono">${esc(v.prompt)}</div>
+      <div class="out-actions" style="margin-top:10px">
+        <button class="btn btn-copy" onclick="copy(${JSON.stringify(v.prompt)})">Copy</button>
+        <button class="btn btn-win" onclick="logEntry(${JSON.stringify(v.prompt)},'win')">✅ Win</button>
+        <button class="btn btn-fail" onclick="logEntry(${JSON.stringify(v.prompt)},'fail')">❌ Fail</button>
+      </div>`;
+    container.appendChild(div);
+  });
+}
+
+async function sendToVars(prompt) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('panel-vars').classList.add('active');
+  document.querySelector('.nav-item[data-tab="vars"]').classList.add('active');
+  await generateVariations(prompt);
+}
+
+// ── LOG ───────────────────────────────────────────────────────
+async function logEntry(prompt, status) {
+  const entry = { id: Date.now(), prompt, status, loggedAt: new Date().toISOString() };
+  LOG.unshift(entry);
+  localStorage.setItem('vlab_log', JSON.stringify(LOG.slice(0, 200)));
+  try {
+    await fetch(API + '/api/log', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt, status })
+    });
+  } catch(e) {}
+  toast(status === 'win' ? '✅ Logged as WIN' : '❌ Logged as FAIL');
+}
+
+function loadLog() {
+  const stored = localStorage.getItem('vlab_log');
+  if (stored) {
+    try { LOG = JSON.parse(stored); } catch(e) { LOG = []; }
+  }
+}
+
+function renderLog() {
+  const box = document.getElementById('logContainer');
+  if (!LOG.length) {
+    box.innerHTML = '<div class="empty"><div class="empty-icon">📝</div><div class="empty-text">No entries yet</div></div>';
+    return;
+  }
+  box.innerHTML = '';
+  LOG.forEach(entry => {
+    const d = document.createElement('div');
+    d.className = 'log-entry';
+    const date = new Date(entry.loggedAt).toLocaleString();
+    d.innerHTML = `
+      <div class="log-dot ${entry.status}"></div>
+      <div class="log-info">
+        <div class="log-text">${esc(entry.prompt)}</div>
+        <div class="log-date">${date}</div>
+      </div>
+      <button class="log-copy" onclick="copy(${JSON.stringify(entry.prompt)})">Copy</button>`;
+    box.appendChild(d);
+  });
+}
+
+function clearLog() {
+  LOG = [];
+  localStorage.removeItem('vlab_log');
+  renderLog();
+  toast('Log cleared');
+}
+
+function exportLog() {
+  const blob = new Blob([JSON.stringify(LOG, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'vlab-log-' + Date.now() + '.json';
+  a.click();
+}
+
+// ── CONFIG ────────────────────────────────────────────────────
+function loadConfig() {
+  const stored = localStorage.getItem('vlab_cfg');
+  if (stored) { try { CFG = Object.assign(CFG, JSON.parse(stored)); } catch(e) {} }
+  const arEl = document.getElementById('cfgAr');
+  const sEl = document.getElementById('cfgStylize');
+  const cEl = document.getElementById('cfgChaos');
+  if (arEl) arEl.value = CFG.ar;
+  if (sEl) sEl.value = String(CFG.stylize);
+  if (cEl) cEl.value = String(CFG.chaos);
+}
+
+function saveConfig() {
+  CFG.ar = document.getElementById('cfgAr').value;
+  CFG.stylize = parseInt(document.getElementById('cfgStylize').value);
+  CFG.chaos = parseInt(document.getElementById('cfgChaos').value);
+  localStorage.setItem('vlab_cfg', JSON.stringify(CFG));
+  toast('Config saved');
+}
+
+function clearStorage() {
+  localStorage.clear();
+  LOG = [];
+  toast('Storage cleared');
+}
+
+// ── LOCAL FALLBACK KIMIFY ─────────────────────────────────────
+function localKimify(text) {
+  const l = text.toLowerCase();
+  let actress = null;
+  for (const a of ACTRESSES) {
+    if (l.includes(a.toLowerCase().split(' ')[0])) { actress = a; break; }
+  }
+  const brutal = l.includes('brutal') || l.includes('hiper') || l.includes('extreme');
+  const phys = brutal
+    ? 'low-waist exposing full brutal 8-pack rectus abdominis, serratus anterior fingers, oblique ridges, vascular lower abdomens, pores visible, sweat beads'
+    : 'low-waist exposing defined rectus abdominis, serratus visible, athletic build, real skin texture';
+  const setting = l.includes('desert') || l.includes('desierto') ? 'dust storm, golden particles, harsh 90° sunlight' : 'void — pure black, single brutal studio light';
+  const prompt = [
+    actress ? `Cinematic full-body portrait of ${actress}, female, 6'2" extreme torso elongation 70:30` : "Cinematic full-body portrait of female figure, 6'2\" extreme torso elongation 70:30",
+    phys,
+    'minimal tactical gear, female form under tension',
+    setting,
+    'hard 45° key light creating razor shadows across abs, no fill light',
+    'Shot on ARRI Alexa 65 with Cooke S7i 50mm, f/2.8, photorealistic, film grain'
+  ].join(', ') + ' --ar 9:20 --raw --stylize 250 --c 15 --v 8.1';
+  const words = prompt.split(/\s+/);
+  return { prompt, tokens: words.length, physiqueFirst: true, actress };
+}
+
+// ── UTILS ─────────────────────────────────────────────────────
+function copy(text) {
+  navigator.clipboard.writeText(text).then(() => toast('Copied!')).catch(() => toast('Copy failed'));
+}
+
+function esc(str) {
+  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+let toastTimer = null;
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2200);
+}
+</script>
+</body>
+</html>
