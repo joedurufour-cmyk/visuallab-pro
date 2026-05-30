@@ -492,16 +492,16 @@ input[type="checkbox"]:checked::after{left:20px;background:#fff}
 <!-- ═══ SETTINGS ════════════════════════════════════════════════ -->
 <div class="section" id="settings">
 <span class="label">Cloud Backend</span>
-<div class="toggle-row"><div class="toggle-label">Use Cloud Mode<small>Send requests to Render backend + Kimi API</small></div><input type="checkbox" id="cloudToggle" onchange="saveCloudConfig()"></div>
+<div class="toggle-row"><div class="toggle-label">Use Cloud Mode<small>Send requests to Render backend</small></div><input type="checkbox" id="cloudToggle" onchange="saveCloudConfig()"></div>
 <span class="label">Backend URL</span>
 <input type="text" id="backendUrl" placeholder="https://visuallab-pro.onrender.com" onchange="saveCloudConfig()">
-<span class="label">API Secret</span>
-<input type="text" id="apiSecret" placeholder="vl-pro-secret-key" onchange="saveCloudConfig()">
+<span class="label">API Secret <small style="color:var(--text3);text-transform:none;letter-spacing:0">(opcional — dejar en blanco)</small></span>
+<input type="text" id="apiSecret" placeholder="(opcional)" onchange="saveCloudConfig()">
 <div class="tip-box" style="margin-top:16px">
-<k>How to use:</k><br>
-1. Backend URL: https://visuallab-pro.onrender.com<br>
-2. Set API secret + enable Cloud Mode<br>
-3. "Native" and "Enhance" will call the real LLM
+<k>Setup:</k><br>
+1. Backend URL: <b>https://visuallab-pro.onrender.com</b><br>
+2. API Secret: dejar en blanco (no requerido)<br>
+3. Enable Cloud Mode → Test Connection
 </div>
 <span class="label">Connection Test</span>
 <button class="btn btn-kimi-generate" onclick="testConnection()" style="margin:0">Test Connection →</button>
@@ -1567,19 +1567,17 @@ function loadCloudConfig() {
 
 function isCloudMode() {
   var cfg = getCloudConfig();
-  return !!(cfg.enabled && cfg.url && cfg.secret);
+  return !!(cfg.enabled && cfg.url);
 }
 
 async function apiCall(endpoint, body) {
   var cfg = getCloudConfig();
+  // endpoint already includes /api/ prefix from caller
   var url = cfg.url.replace(/\/+$/, '') + endpoint;
   try {
     var resp = await fetch(url, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-API-Key': cfg.secret
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body)
     });
     if (!resp.ok) {
@@ -1595,12 +1593,13 @@ async function apiCall(endpoint, body) {
 
 async function testConnection() {
   var cfg = getCloudConfig();
-  if (!cfg.url || !cfg.secret) { showToast('Fill URL and Secret first'); return; }
+  if (!cfg.url) { showToast('Fill Backend URL first'); return; }
   showToast('Testing...');
   try {
-    var resp = await fetch(cfg.url.replace(/\/+$/, '') + '/health');
+    var resp = await fetch(cfg.url.replace(/\/+$/, '') + '/api/health');
     var data = await resp.json();
-    document.getElementById('connResult').innerHTML = '<div class="tip-box" style="border-color:var(--accent2)"><k>OK:</k> Backend ' + (data.kimi_configured ? 'ready + LLM connected' : 'ready but NO API key') + '</div>';
+    document.getElementById('connResult').innerHTML = '<div class="tip-box" style="border-color:var(--accent2)"><k>✅ OK:</k> Backend online · v' + (data.version||'?') + '</div>';
+    showToast('Connected!');
   } catch(e) {
     document.getElementById('connResult').innerHTML = '<div class="tip-box" style="border-color:var(--accent)"><k>FAIL:</k> ' + e.message + '</div>';
   }
@@ -2199,14 +2198,20 @@ function injectCAVPanels() {
 injectCAVCSS();
 
 
-// ── CLOUD URL AUTO-DETECT ──
 
-// Auto-set backend URL if on Render
+// ── CLOUD URL AUTO-DETECT ──
 (function() {
   var cfg = getCloudConfig();
-  if (!cfg.url && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+  var isRemote = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
+  if (isRemote) {
     var autoUrl = window.location.origin;
-    document.getElementById('backendUrl').value = autoUrl;
+    if (!cfg.url) {
+      cfg.url = autoUrl;
+      cfg.enabled = true;
+      localStorage.setItem('vlpro_cloud', JSON.stringify(cfg));
+    }
+    // Always refresh UI fields
+    loadCloudConfig();
     document.getElementById('hdrStatus').textContent = 'cloud';
   }
 })();
