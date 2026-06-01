@@ -3,269 +3,172 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Visual Lab PRO · v9</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<title>Visual Lab PRO v9 · Motion Matrix</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-:root{
-  --bg:#060608;--surface:#0d0d12;--surface2:#12121a;--surface3:#181822;--border:#1c1c28;
-  --text:#f0f0f8;--text2:#6060a0;--text3:#303060;
-  --accent:#e0365c;--accent2:#36e08a;--accent3:#3670e0;--warn:#e08036;--kimi:#a855f7;
-}
-body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);line-height:1.5;padding-bottom:72px}
-code,pre,textarea,.mono{font-family:'JetBrains Mono',monospace}
-
-/* ── HEADER ── */
-.header{
-  position:sticky;top:0;z-index:100;
-  background:rgba(6,6,8,0.96);border-bottom:1px solid var(--border);
-  backdrop-filter:blur(16px);
-  padding:0 16px;height:52px;
-  display:flex;align-items:center;justify-content:space-between;
-}
-.brand{display:flex;align-items:center;gap:10px}
-.brand h1{font-size:16px;font-weight:800;letter-spacing:-.3px}
-.brand .badge{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
-  color:var(--kimi);border:1px solid var(--kimi);padding:2px 7px;border-radius:4px}
-.header-right{font-size:10px;color:var(--text3);font-family:'JetBrains Mono',monospace}
-.status-live{display:inline-block;width:5px;height:5px;background:var(--accent2);border-radius:50%;margin-right:4px;animation:blink 2s infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-
-/* ── BOTTOM NAV ── */
-.bottom-nav{
-  position:fixed;bottom:0;left:0;right:0;z-index:100;
-  background:rgba(6,6,8,0.97);border-top:1px solid var(--border);
-  backdrop-filter:blur(16px);
-  display:flex;
-}
-.nav-btn{
-  flex:1;padding:8px 2px;background:none;border:none;
-  color:var(--text3);font-size:8px;font-weight:700;
-  text-transform:uppercase;letter-spacing:.5px;
-  cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;
-  font-family:'Syne',sans-serif;transition:color .15s;
-}
-.nav-btn .icon{font-size:17px;line-height:1}
-.nav-btn.active{color:var(--accent)}
-.nav-btn.active.kimi-tab{color:var(--kimi)}
-.nav-btn.active.blocks-tab{color:var(--warn)}
-.nav-btn.active.vars-tab{color:var(--accent3)}
-.nav-btn.active.log-tab{color:var(--accent2)}
-
-/* ── SECTIONS ── */
-.section{display:none;padding:16px;animation:fadeIn .2s}
+:root{--bg:#000;--surface:#0a0a0a;--surface2:#141414;--surface3:#1a1a1a;--border:#222;--text:#e8e8e8;--text2:#888;--text3:#555;--accent:#ff3366;--accent2:#33ff88;--accent3:#3388ff;--warn:#ffaa33;--kimi:#cc77ff}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.5;padding-bottom:90px}
+.header{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--border);padding:12px 16px;display:flex;justify-content:space-between;align-items:center}
+.header h1{font-size:18px;font-weight:700;letter-spacing:0.5px}
+.header .badge{font-size:10px;color:var(--kimi);text-transform:uppercase;letter-spacing:1px;border:1px solid var(--kimi);padding:2px 8px;border-radius:10px}
+.section{display:none;padding:16px;animation:fadeIn .3s}
 .section.active{display:block}
-@keyframes fadeIn{from{opacity:0;transform:translateX(6px)}to{opacity:1;transform:translateX(0)}}
-
-/* ── LABELS ── */
-.label{
-  display:block;font-size:10px;font-weight:700;letter-spacing:1.5px;
-  text-transform:uppercase;color:var(--text2);margin:20px 0 8px;
-}
-.label small{color:var(--text3);font-weight:400;text-transform:none;letter-spacing:0;font-size:11px}
-
-/* ── INPUTS ── */
-textarea,input[type="text"],input[type="number"],select{
-  width:100%;background:var(--surface2);border:1px solid var(--border);
-  border-radius:10px;padding:13px;color:var(--text);
-  font-size:14px;font-family:'Syne',sans-serif;outline:none;resize:vertical;
-  transition:border-color .2s;
-}
-textarea:focus,input:focus,select:focus{border-color:var(--accent)}
-textarea{min-height:90px;line-height:1.6;font-family:'JetBrains Mono',monospace;font-size:13px}
-select{
-  appearance:none;-webkit-appearance:none;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='%236060a0' d='M5 7L1 3h8z'/%3E%3C/svg%3E");
-  background-repeat:no-repeat;background-position:right 10px center;padding-right:28px;
-}
-
-/* ── CHIPS ── */
-.chip-grid{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px}
-.chip{
-  padding:9px 15px;background:var(--surface2);border:1.5px solid var(--border);
-  border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;
-  color:var(--text2);user-select:none;transition:all .15s;
-}
-.chip:hover{border-color:var(--accent);color:var(--accent)}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text2);margin:20px 0 8px}
+.label small{color:var(--text3);font-weight:400;text-transform:none;letter-spacing:0}
+textarea,input[type="text"],input[type="number"],select{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px;color:var(--text);font-size:15px;font-family:inherit;outline:none;resize:vertical}
+textarea{min-height:100px}
+.chip-grid{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.chip{padding:12px 18px;background:var(--surface2);border:2px solid var(--border);border-radius:24px;font-size:14px;cursor:pointer;user-select:none;color:var(--text2);font-weight:500;min-width:90px;text-align:center}
 .chip.active{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
 .chip.locked{border-color:var(--accent2);color:var(--accent2)}
 .chip.kimi{border-color:var(--kimi);color:var(--kimi)}
 .chip.kimi.active{background:var(--kimi);color:#fff}
-.chip.fav{background:var(--surface3);border-color:var(--warn);color:var(--warn)}
-
-/* ── BUTTONS ── */
-.btn{
-  flex:1;padding:14px;border:none;border-radius:12px;
-  font-size:14px;font-weight:700;cursor:pointer;
-  text-transform:uppercase;letter-spacing:.5px;
-  display:flex;align-items:center;justify-content:center;gap:6px;
-  font-family:'Syne',sans-serif;transition:all .15s;
-}
-.btn:active{transform:scale(0.97)}
-.btn-copy{background:var(--accent);color:#fff}
-.btn-copy:hover{background:#f0405f}
-.btn-kimi{background:var(--kimi);color:#fff}
-.btn-kimi:hover{background:#9333ea}
-.btn-win{background:var(--surface2);border:1.5px solid var(--accent2);color:var(--accent2);font-size:13px;padding:10px;min-width:46px;border-radius:10px}
-.btn-fail{background:var(--surface2);border:1.5px solid var(--accent);color:var(--accent);font-size:13px;padding:10px;min-width:46px;border-radius:10px}
-.btn-generate{background:var(--accent);color:#fff;width:100%;margin:16px 0;padding:16px;font-size:15px}
-.btn-generate:hover{background:#f0405f}
-.btn-kimi-generate{background:var(--kimi);color:#fff;width:100%;margin:16px 0;padding:16px;font-size:15px}
-
-/* ── CARDS / CATEGORIES ── */
-.category{margin:16px 0;padding:14px;background:var(--surface);border-radius:12px;border:1px solid var(--border)}
-.category-title{
-  font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;
-  color:var(--text2);margin-bottom:12px;
-  display:flex;justify-content:space-between;align-items:center;
-}
-.category-title .toggle-btn{
-  font-size:15px;color:var(--accent);cursor:pointer;font-weight:700;
-  width:26px;height:26px;display:flex;align-items:center;justify-content:center;
-  background:var(--surface2);border-radius:7px;
-}
+.category{margin:20px 0;padding:16px;background:var(--surface);border-radius:12px;border:1px solid var(--border)}
+.category-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text2);margin-bottom:12px;display:flex;justify-content:space-between}
+.category-title .toggle-btn{font-size:16px;color:var(--accent);cursor:pointer;font-weight:700;width:28px;height:28px;display:flex;align-items:center;justify-content:center;background:var(--surface2);border-radius:8px}
 .collapsed .cat-body{display:none}
-
-/* ── PROMPT CARD ── */
-.prompt-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;margin:12px 0}
-.prompt-card .meta{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;display:flex;justify-content:space-between}
+.prompt-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;margin:16px 0}
+.prompt-card .meta{font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;display:flex;justify-content:space-between}
 .prompt-card .meta .changed{color:var(--warn);font-weight:700}
-.prompt-text{
-  font-size:13px;line-height:1.7;word-break:break-word;
-  font-family:'JetBrains Mono',monospace;color:var(--text);
-  padding:10px;background:var(--surface2);border-radius:8px;margin:8px 0;
-}
-.actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
-
-/* ── TOGGLE ROW ── */
-.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--border)}
-.toggle-row:last-child{border-bottom:none}
-.toggle-label{font-size:14px;font-weight:600}
-.toggle-label small{display:block;color:var(--text2);font-size:11px;margin-top:2px;font-weight:400}
-input[type="checkbox"]{
-  width:40px;height:22px;appearance:none;-webkit-appearance:none;
-  background:var(--surface3);border:1px solid var(--border);border-radius:11px;
-  cursor:pointer;position:relative;transition:background .2s;flex-shrink:0;
-}
-input[type="checkbox"]::after{
-  content:'';position:absolute;top:2px;left:2px;
-  width:16px;height:16px;background:var(--text3);border-radius:8px;transition:all .2s;
-}
-input[type="checkbox"]:checked{background:var(--accent);border-color:var(--accent)}
-input[type="checkbox"]:checked::after{left:20px;background:#fff}
-
-/* ── INLINE CONTROL ── */
-.inline-control{display:flex;align-items:center;gap:10px;margin:8px 0;flex-wrap:wrap}
-.inline-control span{font-size:13px;color:var(--text2);font-weight:600;min-width:90px}
-.inline-control select{flex:1;min-width:120px}
-
-/* ── LOG ITEM ── */
-.log-item{display:flex;align-items:center;gap:10px;padding:12px;background:var(--surface);border-radius:10px;margin:7px 0;border:1px solid var(--border)}
-.log-item .status-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.prompt-text{font-size:14px;line-height:1.6;word-break:break-word;font-family:monospace;color:var(--text);padding:10px;background:var(--surface2);border-radius:8px;margin:8px 0}
+.actions{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+.btn{flex:1;padding:16px;border:none;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:.5px;display:flex;align-items:center;justify-content:center;gap:6px}
+.btn-copy{background:var(--accent);color:#fff}
+.btn-kimi{background:var(--kimi);color:#fff}
+.btn-win{background:var(--surface2);border:2px solid var(--accent2);color:var(--accent2);font-size:14px;padding:10px;min-width:50px;border-radius:10px}
+.btn-fail{background:var(--surface2);border:2px solid var(--accent);color:var(--accent);font-size:14px;padding:10px;min-width:50px;border-radius:10px}
+.btn-generate{background:var(--accent);color:#fff;width:100%;margin:20px 0;padding:18px;font-size:16px}
+.btn-kimi-generate{background:var(--kimi);color:#fff;width:100%;margin:20px 0;padding:18px;font-size:16px}
+.log-item{display:flex;align-items:center;gap:12px;padding:14px;background:var(--surface);border-radius:12px;margin:8px 0;border:1px solid var(--border)}
+.log-item .status-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
 .log-item .status-dot.win{background:var(--accent2)}
 .log-item .status-dot.fail{background:var(--accent)}
 .log-item .info{flex:1;min-width:0}
-.log-item .title{font-size:12px;font-weight:700;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.log-item .date{font-size:10px;color:var(--text2);font-family:'JetBrains Mono',monospace}
-
-/* ── TOAST ── */
-.toast{
-  position:fixed;bottom:84px;left:50%;
-  transform:translateX(-50%) translateY(16px);
-  background:var(--surface2);border:1px solid var(--border);
-  color:var(--text);padding:12px 24px;border-radius:12px;
-  font-size:13px;font-weight:700;z-index:300;
-  opacity:0;transition:all .25s;pointer-events:none;
-}
+.log-item .title{font-size:13px;font-weight:600;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.log-item .date{font-size:11px;color:var(--text2)}
+.empty{text-align:center;padding:40px 20px;color:var(--text2);font-size:14px}
+.empty .icon{font-size:48px;margin-bottom:12px;opacity:.5}
+.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:14px 28px;border-radius:14px;font-size:15px;font-weight:700;z-index:200;opacity:0;transition:all .3s}
 .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
-
-/* ── MISC ── */
-.empty{text-align:center;padding:40px 20px;color:var(--text2);font-size:13px}
-.empty .icon{font-size:44px;margin-bottom:12px;opacity:.4;display:block}
-.tip-box{background:var(--surface2);border-left:2px solid var(--accent3);padding:11px 12px;margin:10px 0;font-size:12px;color:var(--text2);border-radius:0 8px 8px 0}
+.inline-control{display:flex;align-items:center;gap:10px;margin:8px 0;flex-wrap:wrap}
+.inline-control span{font-size:14px;color:var(--text2);font-weight:600;min-width:100px}
+.inline-control select{flex:1;min-width:150px}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)}
+.toggle-label{font-size:15px;font-weight:600}
+.toggle-label small{display:block;color:var(--text2);font-size:12px;margin-top:2px;font-weight:400}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--bg);border-top:1px solid var(--border);display:flex;z-index:100}
+.nav-btn{flex:1;padding:10px 4px;background:none;border:none;color:var(--text2);font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px}
+.nav-btn .icon{font-size:18px}
+.nav-btn.active{color:var(--accent)}
+.nav-btn.kimi.active{color:var(--kimi)}
+.nav-btn.blocks.active{color:#ff9933}
+.compare-item{background:var(--surface);border:2px solid var(--border);border-radius:12px;padding:12px;cursor:pointer}
+.compare-item.selected{border-color:var(--accent)}
+.native-input{background:var(--surface3);border:2px solid var(--kimi);border-radius:14px;padding:20px;font-size:16px;min-height:120px}
+.native-result{background:var(--surface);border:1px solid var(--kimi);border-radius:14px;padding:16px;margin:16px 0}
+.native-result .tag{background:var(--kimi);color:#fff;font-size:10px;padding:2px 8px;border-radius:6px;display:inline-block;margin-bottom:8px}
+.table-ref{width:100%;margin:12px 0;border-collapse:collapse;font-size:12px}
+.table-ref th{background:var(--surface2);padding:8px;text-align:left;border:1px solid var(--border);color:var(--text2)}
+.table-ref td{padding:8px;border:1px solid var(--border);color:var(--text3)}
+.table-ref .optimal{background:rgba(51,255,136,.1);color:var(--accent2);font-weight:600}
+.table-ref .danger{background:rgba(255,51,102,.1);color:var(--accent);font-weight:600}
+.tip-box{background:var(--surface2);border-left:3px solid var(--accent3);padding:12px;margin:12px 0;font-size:13px;color:var(--text2)}
 .tip-box k{color:var(--accent3);font-weight:700}
-.table-ref{width:100%;border-collapse:collapse;font-size:11px;margin:10px 0;font-family:'JetBrains Mono',monospace}
-.table-ref th{background:var(--surface2);padding:7px 9px;text-align:left;border:1px solid var(--border);color:var(--text2);font-size:10px;letter-spacing:.5px}
-.table-ref td{padding:7px 9px;border:1px solid var(--border);color:var(--text3);font-size:11px}
-.table-ref .optimal{background:rgba(54,224,138,.08);color:var(--accent2);font-weight:700}
-.table-ref .danger{background:rgba(224,54,92,.08);color:var(--accent);font-weight:700}
-.sticky-actions{position:sticky;bottom:0;background:var(--bg);padding:12px 0;border-top:1px solid var(--border);z-index:50}
-.builder-help{font-size:11px;color:var(--text3);margin-bottom:10px}
+.builder-help{font-size:12px;color:var(--text3);margin-bottom:12px}
+select{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23888' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
 .group-select{margin-bottom:8px}
-.native-input{background:var(--surface2);border:2px solid var(--kimi);border-radius:12px;padding:16px;font-size:15px;min-height:110px}
-.native-result{background:var(--surface);border:1px solid var(--kimi);border-radius:12px;padding:14px;margin:14px 0}
-.native-result .tag{background:var(--kimi);color:#fff;font-size:9px;padding:2px 8px;border-radius:5px;display:inline-block;margin-bottom:8px;letter-spacing:1px;font-weight:700}
-.duo-grid{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
-.duo-chip{padding:7px 13px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;font-size:11px;cursor:pointer;color:var(--text2);font-weight:700;transition:all .15s}
-.duo-chip:hover{border-color:var(--kimi);color:var(--kimi)}
-.q-btn{padding:8px 14px;background:var(--surface2);border:1px solid var(--accent);border-radius:9px;color:var(--accent);font-size:11px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif}
-.group-dynamics{background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:12px;margin-top:8px}
-.import-area{display:none;margin:12px 0}
-.import-area textarea{width:100%;min-height:100px;font-size:12px}
-.export-btns{display:flex;gap:8px;margin:8px 0}
-.export-btns button{flex:1;padding:10px;font-size:12px;font-weight:700;border:none;border-radius:9px;cursor:pointer;font-family:'Syne',sans-serif}
-.btn-export{background:var(--surface2);border:1px solid var(--accent3);color:var(--accent3)}
-.btn-import{background:var(--surface2);border:1px solid var(--accent);color:var(--accent)}
-.cloud-btn{padding:10px 16px;background:var(--surface2);border:1px solid var(--kimi);border-radius:9px;color:var(--kimi);font-size:12px;font-weight:700;cursor:pointer;margin:8px 0;display:inline-block;font-family:'Syne',sans-serif}
+.sticky-actions{position:sticky;bottom:0;background:var(--bg);padding:12px 0;border-top:1px solid var(--border);z-index:50}
 /* BLOCKS */
-.block-card{background:var(--surface);border:1.5px solid var(--border);border-radius:11px;padding:13px;margin:7px 0}
-.block-card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+.block-card{background:var(--surface);border:2px solid var(--border);border-radius:12px;padding:14px;margin:8px 0}
+.block-card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
 .block-card-name{font-size:14px;font-weight:700;color:var(--text)}
-.block-card-meta{font-size:10px;color:var(--text3);font-family:'JetBrains Mono',monospace}
-.block-card-preview{font-size:11px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:8px;font-family:'JetBrains Mono',monospace}
+.block-card-meta{font-size:11px;color:var(--text3)}
+.block-card-preview{font-size:12px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:8px;font-family:monospace}
 .block-card-btns{display:flex;gap:6px}
-.block-mini-btn{padding:6px 12px;font-size:11px;font-weight:700;border:none;border-radius:7px;cursor:pointer;font-family:'Syne',sans-serif}
+.block-mini-btn{padding:6px 12px;font-size:11px;font-weight:700;border:none;border-radius:8px;cursor:pointer}
 .block-mini-btn.del{background:var(--surface2);border:1px solid var(--accent);color:var(--accent)}
 .block-mini-btn.load{background:var(--surface2);border:1px solid var(--kimi);color:var(--kimi)}
-.mixer-section{background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:13px;margin:9px 0}
-.mixer-section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text2);margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
-.mixer-preview{font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--text3);background:var(--surface2);border-radius:6px;padding:8px;margin-top:6px;min-height:28px;max-height:70px;overflow-y:auto;line-height:1.5}
-.blocks-badge{display:inline-block;background:var(--warn);color:#000;font-size:8px;padding:1px 5px;border-radius:4px;font-weight:700;margin-left:5px}
-.compare-item{background:var(--surface);border:1.5px solid var(--border);border-radius:11px;padding:12px;cursor:pointer;margin-bottom:7px;transition:border-color .15s}
-.compare-item.selected{border-color:var(--accent)}
-.duo-chip.active{border-color:var(--kimi);color:var(--kimi);background:rgba(168,85,247,.1)}
+.mixer-section{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;margin:10px 0}
+.mixer-section-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text2);margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+.mixer-preview{font-size:11px;font-family:monospace;color:var(--text3);background:var(--surface2);border-radius:6px;padding:8px;margin-top:6px;min-height:32px;max-height:70px;overflow-y:auto;line-height:1.5}
+.blocks-badge{display:inline-block;background:#ff9933;color:#000;font-size:9px;padding:1px 5px;border-radius:4px;font-weight:700;margin-left:4px}
+/* v8 additions */
+.chip.fav{background:var(--surface3);border-color:var(--warn);color:var(--warn)}
+.duo-grid{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.duo-chip{padding:8px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:16px;font-size:12px;cursor:pointer;color:var(--text2);font-weight:500}
+.duo-chip:hover{border-color:var(--accent);color:var(--accent)}
+.group-dynamics{background:var(--surface3);border:1px solid var(--border);border-radius:10px;padding:12px;margin-top:8px}
+.q-btn{padding:8px 14px;background:var(--surface2);border:1px solid var(--accent);border-radius:10px;color:var(--accent);font-size:12px;font-weight:700;cursor:pointer}
+.import-area{display:none;margin:12px 0}
+.import-area textarea{width:100%;min-height:120px;font-size:12px;font-family:monospace}
+.export-btns{display:flex;gap:8px;margin:8px 0}
+.export-btns button{flex:1;padding:10px;font-size:12px;font-weight:700;border:none;border-radius:10px;cursor:pointer}
+.btn-export{background:var(--surface2);border:1px solid var(--accent3);color:var(--accent3)}
+.btn-import{background:var(--surface2);border:1px solid var(--accent);color:var(--accent)}
+.nav-btn.motion.active{color:#ff9f1c}
+/* MOTION MATRIX */
+.motion-layer{margin:12px 0;background:var(--surface);border-radius:12px;border:1px solid var(--border);overflow:hidden}
+.motion-layer-header{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;cursor:pointer;user-select:none}
+.motion-layer-title{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.motion-layer-badge{font-size:9px;font-weight:900;color:#000;border-radius:4px;padding:2px 7px}
+.motion-physics{font-size:10px;color:var(--text3);padding:6px 14px 10px;border-top:1px solid var(--border);line-height:1.5;font-style:italic}
+.motion-subcat-bar{display:flex;gap:6px;padding:8px 14px;overflow-x:auto;border-bottom:1px solid var(--border);background:var(--surface2)}
+.motion-subcat{padding:5px 12px;background:var(--surface);border:1px solid var(--border);border-radius:14px;font-size:11px;cursor:pointer;color:var(--text2);white-space:nowrap;font-weight:500}
+.motion-subcat.active{border-color:#ff9f1c;color:#ff9f1c;background:rgba(255,159,28,.08)}
+.motion-token-grid{display:flex;flex-wrap:wrap;gap:6px;padding:12px 14px}
+.motion-token{padding:6px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;font-size:11px;cursor:pointer;color:var(--text2);font-weight:500;font-family:monospace}
+.motion-token.active{border-color:#ff9f1c;color:#ff9f1c;background:rgba(255,159,28,.1)}
+.motion-token.expr.active{border-color:#ff3366;color:#ff3366;background:rgba(255,51,102,.1)}
+.motion-token.env.active{border-color:#33ff88;color:#33ff88;background:rgba(51,255,136,.1)}
+.motion-token.param.active{border-color:#3388ff;color:#3388ff;background:rgba(51,136,255,.1)}
+.motion-tray{margin:10px 0;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px}
+.motion-tray-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#ff9f1c;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
+.motion-chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
+.motion-chip{display:flex;align-items:center;gap:4px;padding:3px 8px;background:rgba(255,159,28,.08);border:1px solid rgba(255,159,28,.3);border-radius:4px;font-size:10px;color:#ff9f1c;font-family:monospace}
+.motion-chip-x{background:none;border:none;color:#ff9f1c;cursor:pointer;font-size:13px;padding:0;line-height:1}
+.motion-output{background:var(--surface);border:1px solid rgba(255,159,28,.4);border-radius:8px;padding:10px;font-size:11px;font-family:monospace;color:#50ffcc;line-height:1.7;word-break:break-all;margin:8px 0;min-height:40px}
+.motion-archetype-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+.motion-archetype-card{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px;cursor:pointer}
+.motion-archetype-card:hover{border-color:#ff9f1c}
+.motion-archetype-name{font-size:11px;font-weight:700;color:var(--text);margin-bottom:4px}
+.motion-archetype-badges{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px}
+.motion-archetype-badge{font-size:9px;padding:1px 6px;border-radius:3px;border:1px solid}
+.motion-archetype-prompt{font-size:9px;color:var(--text3);font-family:monospace;line-height:1.4;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 </style>
 </head>
 <body>
-
 <div class="header">
-  <div class="brand">
-    <h1>Visual Lab PRO</h1>
-    <div class="badge">Blocks × MJ 8.1 v9</div>
-  </div>
-  <div class="header-right"><span class="status-live"></span><span id="hdrStatus">local</span></div>
+  <div><h1>Visual Lab PRO</h1><div class="badge">v9 · Motion Matrix · CAV</div></div>
 </div>
 
 <div class="bottom-nav">
-  <button class="nav-btn active" data-tab="forge" onclick="switchTab('forge',this)"><span class="icon">⚗️</span><span>Forge</span></button>
-  <button class="nav-btn kimi-tab" data-tab="native" onclick="switchTab('native',this)"><span class="icon">🧠</span><span>Native</span></button>
-  <button class="nav-btn" data-tab="builder" onclick="switchTab('builder',this)"><span class="icon">🏗️</span><span>Builder</span></button>
-  <button class="nav-btn vars-tab" data-tab="vars" onclick="switchTab('vars',this)"><span class="icon">🔀</span><span>Vars</span></button>
-  <button class="nav-btn" data-tab="comp" onclick="switchTab('comp',this)"><span class="icon">⚖️</span><span>Comp</span></button>
-  <button class="nav-btn blocks-tab" data-tab="blocks" onclick="switchTab('blocks',this)"><span class="icon">🧱</span><span>Blocks</span></button>
-  <button class="nav-btn" data-tab="settings" onclick="switchTab('settings',this)"><span class="icon">⚙️</span><span>Config</span></button>
-  <button class="nav-btn log-tab" data-tab="log" onclick="switchTab('log',this)"><span class="icon">📝</span><span>Log</span></button>
+  <button class="nav-btn active" data-tab="forge"><span class="icon">⚗️</span><span>Forge</span></button>
+  <button class="nav-btn" data-tab="native"><span class="icon">🧠</span><span>Native</span></button>
+  <button class="nav-btn" data-tab="builder"><span class="icon">🏗️</span><span>Builder</span></button>
+  <button class="nav-btn" data-tab="vars"><span class="icon">🔀</span><span>Vars</span></button>
+  <button class="nav-btn" data-tab="comp"><span class="icon">⚖️</span><span>Comp</span></button>
+  <button class="nav-btn" data-tab="blocks"><span class="icon">🧱</span><span>Blocks</span></button>
+  <button class="nav-btn motion" data-tab="motion"><span class="icon">⚡</span><span>Motion</span></button>
+  <button class="nav-btn" data-tab="settings"><span class="icon">⚙️</span><span>Config</span></button>
+  <button class="nav-btn" data-tab="log"><span class="icon">📝</span><span>Log</span></button>
 </div>
 
-<!-- ═══ FORGE ══════════════════════════════════════════════════ -->
+<!-- === FORGE === -->
 <div class="section active" id="forge">
 <span class="label">Base Prompt</span>
 <textarea id="basePrompt" placeholder="Paste your prompt here..."></textarea>
 <div class="toggle-row"><div class="toggle-label">Brutal Physique<small>Auto-inject hyper musculature hierarchy</small></div><input type="checkbox" id="brutalMode" checked></div>
-<div class="toggle-row"><div class="toggle-label">AR 9:20 Lock<small>Phone wallpaper format</small></div><input type="checkbox" id="arLock" checked></div>
+<div class="toggle-row"><div class="toggle-label">AR 9:20<small>Phone wallpaper format</small></div><input type="checkbox" id="arLock" checked></div>
 <div class="toggle-row"><div class="toggle-label">Kimi Native<small>Apply Kimi prompt engineering</small></div><input type="checkbox" id="kimiMode" checked></div>
-<span class="label">Lock Sections</span>
+<span class="label">Lock</span>
 <div class="chip-grid"><div class="chip locked">Physique</div><div class="chip locked">Light</div><div class="chip locked">Camera</div></div>
 <span class="label">Quick Preset</span>
-<div class="chip-grid">
-  <div class="chip" onclick="preset('anya')">Anya Void</div>
-  <div class="chip" onclick="preset('tessa')">Tessa Storm</div>
-  <div class="chip" onclick="preset('duo')">Duo Close</div>
-</div>
+<div class="chip-grid"><div class="chip" onclick="preset('anya')">Anya Void</div><div class="chip" onclick="preset('tessa')">Tessa Storm</div><div class="chip" onclick="preset('duo')">Duo Close</div></div>
 <button class="btn btn-generate" onclick="goTo('vars')">Build Variations →</button>
 </div>
 
-<!-- ═══ NATIVE ═════════════════════════════════════════════════ -->
+<!-- === NATIVE === -->
 <div class="section" id="native">
 <span class="label">Write in your language. I translate.</span>
 <textarea class="native-input" id="nativeInput" placeholder="Tessa Thompson mojada brutal en desierto tactical... Squi, surprise me."></textarea>
@@ -284,7 +187,7 @@ input[type="checkbox"]:checked::after{left:20px;background:#fff}
 <tr><th>Stylize</th><th>Realism</th><th>Detail</th><th>Use</th></tr>
 <tr><td>400</td><td class="danger">Low</td><td class="danger">Low</td><td>Fantasy epic</td></tr>
 <tr><td>280</td><td>Medium</td><td>Medium</td><td>Balance</td></tr>
-<tr><td class="optimal">250</td><td class="optimal">HIGH</td><td class="optimal">HIGH</td><td class="optimal">OPTIMO — Cinema</td></tr>
+<tr><td class="optimal">250</td><td class="optimal">HIGH</td><td class="optimal">HIGH</td><td class="optimal">OPTIMO — Cinema sobrio</td></tr>
 <tr><td>240</td><td>Max</td><td>Max</td><td>Crudo, poros extremos</td></tr>
 <tr><td>200</td><td class="danger">Extreme</td><td class="danger">Extreme</td><td class="danger">Docu, riesgo fealdad</td></tr>
 </table>
@@ -296,95 +199,102 @@ input[type="checkbox"]:checked::after{left:20px;background:#fff}
 </table>
 </div>
 
-<!-- ═══ BUILDER ════════════════════════════════════════════════ -->
+<!-- === BUILDER === -->
 <div class="section" id="builder">
 <span class="label">6-Section Constructor</span>
 <div class="builder-help">Each section builds a block. Kimi assembles with optimal hierarchy.</div>
 <div class="duo-grid" id="duoPresets">
-  <div class="duo-chip" onclick="loadDuoPreset('Anya + Tessa')">Anya + Tessa</div>
-  <div class="duo-chip" onclick="loadDuoPreset('Zoe + Gal')">Zoe + Gal</div>
-  <div class="duo-chip" onclick="loadDuoPreset('Scarlett + Brie')">Scarlett + Brie</div>
-  <div class="duo-chip" onclick="loadDuoPreset('Lupita + Danai')">Lupita + Danai</div>
-  <div class="duo-chip" onclick="loadDuoPreset('Margot + Karen')">Margot + Karen</div>
-  <div class="duo-chip" onclick="loadDuoPreset('Charlize + Rebecca')">Charlize + Rebecca</div>
-  <div class="duo-chip" onclick="loadDuoPreset('Ana + Alexandra')">Ana + Alexandra</div>
-  <div class="duo-chip" onclick="loadDuoPreset('Kate + Milla')">Kate + Milla</div>
-  <div class="duo-chip" onclick="loadDuoPreset('Random Duo')">🎲 Random</div>
+<div class="duo-chip" onclick="loadDuoPreset('Anya + Tessa')">Anya + Tessa</div>
+<div class="duo-chip" onclick="loadDuoPreset('Zoe + Gal')">Zoe + Gal</div>
+<div class="duo-chip" onclick="loadDuoPreset('Scarlett + Brie')">Scarlett + Brie</div>
+<div class="duo-chip" onclick="loadDuoPreset('Lupita + Danai')">Lupita + Danai</div>
+<div class="duo-chip" onclick="loadDuoPreset('Margot + Karen')">Margot + Karen</div>
+<div class="duo-chip" onclick="loadDuoPreset('Charlize + Rebecca')">Charlize + Rebecca</div>
+<div class="duo-chip" onclick="loadDuoPreset('Ana + Alexandra')">Ana + Alexandra</div>
+<div class="duo-chip" onclick="loadDuoPreset('Kate + Milla')">Kate + Milla</div>
+<div class="duo-chip" onclick="loadDuoPreset('Random Duo')">🎲 Random</div>
 </div>
 <div class="inline-control" style="margin-top:8px">
-  <span style="min-width:auto">Count:</span>
-  <select id="subjQty" onchange="updateSubjFields(); updateGroupDynamics()"><option>1</option><option>2</option><option>3</option><option>4</option></select>
-  <span style="flex:1"></span>
-  <button class="q-btn" onclick="randomCombo()">🎲 Random Combo</button>
+<span style="min-width:auto">Count:</span><select id="subjQty" onchange="updateSubjFields(); updateGroupDynamics();"><option>1</option><option>2</option><option>3</option><option>4</option></select>
+<span style="flex:1"></span>
+<button class="q-btn" onclick="randomCombo()">🎲 Random Combo</button>
 </div>
 <div class="category" id="sec-A"><div class="category-title">A. Subjects <span class="toggle-btn" onclick="toggleCat('sec-A')">−</span></div><div class="cat-body">
-  <div class="inline-control"><span>Qty:</span><select id="subjQtyB" onchange="updateSubjFields(); updateGroupDynamics();"><option>1</option><option>2</option><option>3</option><option>4</option></select></div>
-  <div id="subj1-block">
-    <div class="inline-control"><span>Actress 1:</span><select id="subj1Actress"></select></div>
-    <div class="inline-control"><span>Character 1:</span><select id="subj1Char"><option>Original</option><option>Wonder Woman</option><option>Supergirl</option><option>Batgirl</option><option>Harley Quinn</option><option>Catwoman</option><option>Raven</option><option>Black Widow</option><option>Storm</option></select></div>
-  </div>
-  <div id="subj2-block" style="display:none">
-    <div class="inline-control"><span>Actress 2:</span><select id="subj2Actress"></select></div>
-    <div class="inline-control"><span>Character 2:</span><select id="subj2Char"><option>Original</option><option>Wonder Woman</option><option>Supergirl</option><option>Batgirl</option><option>Harley Quinn</option><option>Catwoman</option><option>Raven</option><option>Black Widow</option><option>Storm</option></select></div>
-  </div>
-  <div id="subj3-block" style="display:none">
-    <div class="inline-control"><span>Actress 3:</span><select id="subj3Actress"></select></div>
-    <div class="inline-control"><span>Character 3:</span><select id="subj3Char"><option>Original</option><option>Wonder Woman</option><option>Supergirl</option></select></div>
-  </div>
-  <div id="subj4-block" style="display:none">
-    <div class="inline-control"><span>Actress 4:</span><select id="subj4Actress"></select></div>
-    <div class="inline-control"><span>Character 4:</span><select id="subj4Char"><option>Original</option><option>Wonder Woman</option><option>Supergirl</option></select></div>
-  </div>
-  <div class="inline-control"><span>Physique:</span><select id="subjPhys"><option>Brutal defined</option><option>Athletic</option><option>Curves</option></select></div>
-  <div class="inline-control"><span>Torso ratio:</span><select id="subjRatio"><option>70:30</option><option>65:35</option><option>75:25</option></select></div>
-  <div class="inline-control"><span>Height:</span><select id="subjHeight"><option>6'2"</option><option>6'3"</option><option>6'4"</option></select></div>
+<div class="inline-control"><span>Qty:</span><select id="subjQty" onchange="updateSubjFields(); updateGroupDynamics();"><option>1</option><option>2</option><option>3</option><option>4</option></select></div>
+<div id="subj1-block">
+<div class="inline-control"><span>Actress 1:</span><select id="subj1Actress"></select></div>
+<div class="inline-control"><span>Character 1:</span><select id="subj1Char"><option>Original</option><option>Wonder Woman</option><option>Supergirl</option><option>Batgirl</option><option>Harley Quinn</option><option>Catwoman</option><option>Raven</option><option>Black Widow</option><option>Storm</option></select></div>
+</div>
+<div id="subj2-block" style="display:none">
+<div class="inline-control"><span>Actress 2:</span><select id="subj2Actress"></select></div>
+<div class="inline-control"><span>Character 2:</span><select id="subj2Char"><option>Original</option><option>Wonder Woman</option><option>Supergirl</option><option>Batgirl</option><option>Harley Quinn</option><option>Catwoman</option><option>Raven</option><option>Black Widow</option><option>Storm</option></select></div>
+</div>
+<div id="subj3-block" style="display:none">
+<div class="inline-control"><span>Actress 3:</span><select id="subj3Actress"></select></div>
+<div class="inline-control"><span>Character 3:</span><select id="subj3Char"><option>Original</option><option>Wonder Woman</option><option>Supergirl</option><option>Batgirl</option><option>Harley Quinn</option><option>Catwoman</option><option>Raven</option><option>Black Widow</option><option>Storm</option></select></div>
+</div>
+<div id="subj4-block" style="display:none">
+<div class="inline-control"><span>Actress 4:</span><select id="subj4Actress"></select></div>
+<div class="inline-control"><span>Character 4:</span><select id="subj4Char"><option>Original</option><option>Wonder Woman</option><option>Supergirl</option><option>Batgirl</option><option>Harley Quinn</option><option>Catwoman</option><option>Raven</option><option>Black Widow</option><option>Storm</option></select></div>
+</div>
+<div class="inline-control"><span>Physique:</span><select id="subjPhys"><option>Brutal defined</option><option>Athletic</option><option>Curves</option></select></div>
+<div class="inline-control"><span>Torso ratio:</span><select id="subjRatio"><option>70:30</option><option>65:35</option><option>75:25</option></select></div>
+<div class="inline-control"><span>Height:</span><select id="subjHeight"><option>6'2"</option><option>6'3"</option><option>6'4"</option></select></div>
 </div></div>
 <div class="category" id="sec-B"><div class="category-title">B. Clothing <span class="toggle-btn" onclick="toggleCat('sec-B')">−</span></div><div class="cat-body">
-  <div class="inline-control"><span>Base:</span><select id="clothBase"><option>Tactical bikini</option><option>Sports bra + shorts</option><option>Body</option><option>Duster jacket</option><option>Casual</option><option>Wet look</option><option>Superhero suit</option><option>Bodysuit</option><option>Armor plate</option></select></div>
-  <div class="inline-control"><span>Color:</span><select id="clothColor"><option>Black</option><option>Red</option><option>Blue</option><option>White</option><option>Gold</option><option>Indigo</option><option>Olive</option><option>Gray</option></select></div>
-  <div class="inline-control"><span>Emblem:</span><select id="clothEmblem"><option>None</option><option>Eagle</option><option>S-shield</option><option>Bat</option><option>Diamond</option><option>Cat</option><option>Raven</option><option>Skull</option><option>Star</option></select></div>
-  <div class="inline-control"><span>Material:</span><select id="clothMat"><option>Latex</option><option>Mesh</option><option>Neoprene</option><option>Leather</option><option>Denim</option><option>Cotton</option><option>Silk</option><option>Carbon fiber</option></select></div>
-  <div class="inline-control"><span>State:</span><select id="clothState"><option>Sweat</option><option>Wet</option><option>Dusty</option><option>Intact</option><option>Torn</option><option>Bloodied</option><option>Oiled</option></select></div>
+<div class="inline-control"><span>Base:</span><select id="clothBase"><option>Tactical bikini</option><option>Sports bra + shorts</option><option>Body</option><option>Duster jacket</option><option>Casual</option><option>Wet look</option><option>Superhero suit</option><option>Bodysuit</option><option>Armor plate</option></select></div>
+<div class="inline-control"><span>Color:</span><select id="clothColor"><option>Black</option><option>Red</option><option>Blue</option><option>White</option><option>Gold</option><option>Indigo</option><option>Olive</option><option>Gray</option></select></div>
+<div class="inline-control"><span>Emblem:</span><select id="clothEmblem"><option>None</option><option>Eagle</option><option>S-shield</option><option>Bat</option><option>Diamond</option><option>Cat</option><option>Raven</option><option>Skull</option><option>Star</option></select></div>
+<div class="inline-control"><span>Material:</span><select id="clothMat"><option>Latex</option><option>Mesh</option><option>Neoprene</option><option>Leather</option><option>Denim</option><option>Cotton</option><option>Silk</option><option>Carbon fiber</option></select></div>
+<div class="inline-control"><span>State:</span><select id="clothState"><option>Sweat</option><option>Wet</option><option>Dusty</option><option>Intact</option><option>Torn</option><option>Bloodied</option><option>Oiled</option></select></div>
 </div></div>
 <div class="category" id="sec-C"><div class="category-title">C. Interaction (2+ subjects) <span class="toggle-btn" onclick="toggleCat('sec-C')">−</span></div><div class="cat-body">
-  <div class="inline-control"><span>Position:</span><select id="intPos"><option>Solo</option><option>Back to back</option><option>Face to face</option><option>Side by side</option><option>Formation</option><option>Combat stance</option></select></div>
-  <div class="inline-control"><span>Contact:</span><select id="intContact"><option>No contact</option><option>Shoulders touching</option><option>Hands linked</option><option>Arms crossed</option><option>Weapons crossed</option></select></div>
-  <div class="inline-control"><span>Gaze:</span><select id="intGaze"><option>Camera</option><option>Between them</option><option>Profile</option><option>Closed</option><option>Upward</option></select></div>
-  <div class="inline-control"><span>Expression:</span><select id="intExpr"><option>Serene</option><option>Exhausted</option><option>Competitive</option><option>Maniacal</option><option>Predatory</option><option>Defiant</option><option>Mournful</option></select></div>
-  <div class="group-dynamics" id="groupDynamics" style="display:none">
-    <div class="category-title">Group Dynamics (3+)</div>
-    <div class="inline-control"><span>Formation:</span><select id="gdFormation"><option>Line</option><option>Triangle</option><option>V-shape</option><option>Circle</option><option>Pyramid</option><option>Scatter</option></select></div>
-    <div class="inline-control"><span>Leader:</span><select id="gdLeader"><option>Center</option><option>Left</option><option>Right</option><option>Front</option><option>None</option></select></div>
-    <div class="inline-control"><span>Energy:</span><select id="gdEnergy"><option>United</option><option>Rival</option><option>Family</option><option>Team</option><option>Chaos</option></select></div>
-  </div>
+<div class="inline-control"><span>Position:</span><select id="intPos"><option>Solo</option><option>Back to back</option><option>Face to face</option><option>Side by side</option><option>Formation</option><option>Combat stance</option></select></div>
+<div class="inline-control"><span>Contact:</span><select id="intContact"><option>No contact</option><option>Shoulders touching</option><option>Hands linked</option><option>Arms crossed</option><option>Weapons crossed</option></select></div>
+<div class="inline-control"><span>Gaze:</span><select id="intGaze"><option>Camera</option><option>Between them</option><option>Profile</option><option>Closed</option><option>Upward</option></select></div>
+<div class="inline-control"><span>Expression:</span><select id="intExpr"><option>Serene</option><option>Exhausted</option><option>Competitive</option><option>Maniacal</option><option>Predatory</option><option>Defiant</option><option>Mournful</option></select></div>
+<div class="group-dynamics" id="groupDynamics" style="display:none">
+<div class="category-title">Group Dynamics (3+)</div>
+<div class="inline-control"><span>Formation:</span><select id="gdFormation"><option>Line</option><option>Triangle</option><option>V-shape</option><option>Circle</option><option>Pyramid</option><option>Scatter</option></select></div>
+<div class="inline-control"><span>Leader:</span><select id="gdLeader"><option>Center</option><option>Left</option><option>Right</option><option>Front</option><option>None</option></select></div>
+<div class="inline-control"><span>Energy:</span><select id="gdEnergy"><option>United</option><option>Rival</option><option>Family</option><option>Team</option><option>Chaos</option></select></div>
+</div>
 </div></div>
 <div class="category" id="sec-D"><div class="category-title">D. Background <span class="toggle-btn" onclick="toggleCat('sec-D')">−</span></div><div class="cat-body">
-  <div class="inline-control"><span>Environment:</span><select id="bgEnv"><option>Void</option><option>Desert</option><option>Gym</option><option>City night</option><option>Tundra</option><option>Interior</option><option>Space station</option><option>Rain street</option><option>Industrial</option><option>Forest</option><option>Beach</option><option>Rooftop</option></select></div>
-  <div class="inline-control"><span>Time:</span><select id="bgTime"><option>Noon</option><option>Sunset</option><option>Night</option><option>Dawn</option><option>Twilight</option><option>Midnight</option></select></div>
-  <div class="inline-control"><span>Weather:</span><select id="bgWeather"><option>Clear</option><option>Rain</option><option>Fog</option><option>Storm</option><option>Snow</option><option>Wind</option><option>Heat haze</option></select></div>
-  <div class="inline-control"><span>Light:</span><select id="bgLight"><option>Hard 45</option><option>Cenital</option><option>Frontal</option><option>Backlight</option><option>None (void)</option><option>Neon</option><option>Golden hour</option><option>Moonlight</option></select></div>
+<div class="inline-control"><span>Environment:</span><select id="bgEnv"><option>Void</option><option>Desert</option><option>Gym</option><option>City night</option><option>Tundra</option><option>Interior</option><option>Space station</option><option>Rain street</option><option>Industrial</option><option>Forest</option><option>Beach</option><option>Rooftop</option></select></div>
+<div class="inline-control"><span>Time:</span><select id="bgTime"><option>Noon</option><option>Sunset</option><option>Night</option><option>Dawn</option><option>Twilight</option><option>Midnight</option></select></div>
+<div class="inline-control"><span>Weather:</span><select id="bgWeather"><option>Clear</option><option>Rain</option><option>Fog</option><option>Storm</option><option>Snow</option><option>Wind</option><option>Heat haze</option></select></div>
+<div class="inline-control"><span>Light:</span><select id="bgLight"><option>Hard 45</option><option>Cenital</option><option>Frontal</option><option>Backlight</option><option>None (void)</option><option>Neon</option><option>Golden hour</option><option>Moonlight</option></select></div>
 </div></div>
 <div class="category" id="sec-E"><div class="category-title">E. Camera <span class="toggle-btn" onclick="toggleCat('sec-E')">−</span></div><div class="cat-body">
-  <div class="inline-control"><span>Distance:</span><select id="camDist"><option>Macro torso</option><option>Mid body</option><option>Full body</option><option>Wide with context</option><option>Extreme close-up</option></select></div>
-  <div class="inline-control"><span>Lens:</span><select id="camLens"><option>100mm macro</option><option>85mm</option><option>50mm</option><option>35mm</option><option>24mm</option><option>200mm</option></select></div>
-  <div class="inline-control"><span>Aperture:</span><select id="camAperture"><option>f/1.8</option><option>f/1.4</option><option>f/2.0</option><option>f/2.8</option><option>f/4</option><option>f/5.6</option></select></div>
-  <div class="inline-control"><span>Angle:</span><select id="camAngle"><option>Normal</option><option>Low angle</option><option>High angle</option><option>Dutch</option><option>Worm</option></select></div>
-  <div class="inline-control"><span>Stylize:</span><select id="camStylize"><option value="240">240 — Crudo</option><option value="250" selected>250 — Optimo</option><option value="280">280 — Balance</option></select></div>
+<div class="inline-control"><span>Distance:</span><select id="camDist"><option>Macro torso</option><option>Mid body</option><option>Full body</option><option>Wide with context</option><option>Extreme close-up</option></select></div>
+<div class="inline-control"><span>Lens:</span><select id="camLens"><option>100mm macro</option><option>85mm</option><option>50mm</option><option>35mm</option><option>24mm</option><option>200mm</option></select></div>
+<div class="inline-control"><span>Aperture:</span><select id="camAperture"><option>f/1.8</option><option>f/1.4</option><option>f/2.0</option><option>f/2.8</option><option>f/4</option><option>f/5.6</option></select></div>
+<div class="inline-control"><span>Angle:</span><select id="camAngle"><option>Normal</option><option>Low angle</option><option>High angle</option><option>Dutch</option><option>Worm</option></select></div>
+<div class="inline-control"><span>Stylize:</span><select id="camStylize"><option value="240">240 — Crudo</option><option value="250" selected>250 — Optimo</option><option value="280">280 — Balance</option></select></div>
 </div></div>
 <div class="category" id="sec-F"><div class="category-title">F. Artifacts <span class="toggle-btn" onclick="toggleCat('sec-F')">−</span></div><div class="cat-body">
-  <div class="inline-control"><span>Character:</span><select id="artChar" onchange="updateArtifacts()"><option>None</option><option>Wonder Woman</option><option>Supergirl</option><option>Batgirl</option><option>Harley Quinn</option><option>Catwoman</option><option>Raven</option><option>Black Widow</option><option>Storm</option></select></div>
-  <div class="chip-grid" id="artifactChips"></div>
+<div class="inline-control"><span>Character:</span><select id="artChar" onchange="updateArtifacts()"><option>None</option><option>Wonder Woman</option><option>Supergirl</option><option>Batgirl</option><option>Harley Quinn</option><option>Catwoman</option><option>Raven</option><option>Black Widow</option><option>Storm</option></select></div>
+<div class="chip-grid" id="artifactChips"></div>
 </div></div>
 <div class="sticky-actions">
-  <button class="btn btn-kimi-generate" onclick="buildFromBuilder()">Kimi Build Prompt →</button>
-  <button class="btn btn-generate" onclick="enhancePrompt()" style="margin-top:8px">✨ Kimi Enhance</button>
+<button class="btn btn-kimi-generate" onclick="buildFromBuilder()">Kimi Build Prompt →</button>
+<button class="btn btn-generate" onclick="enhancePrompt()" style="margin-top:8px">✨ Kimi Enhance</button>
+<div id="motionStatusBarBuilder" style="display:none;background:rgba(255,159,28,.08);border:1px solid rgba(255,159,28,.4);border-radius:8px;padding:8px 12px;margin-top:8px">
+  <div style="font-size:10px;color:#ff9f1c;font-weight:700">⚡ Motion activo: <span id="motionStatusBuilderCount"></span> tokens</div>
+</div>
 </div>
 <div id="builderResult"></div>
 </div>
 
-<!-- ═══ VARS ═══════════════════════════════════════════════════ -->
+<!-- === VARS === -->
 <div class="section" id="vars">
 <span class="label">Build Variations — Tap MULTIPLE chips. I mix.</span>
+<div id="motionStatusBar" style="display:none;background:rgba(255,159,28,.08);border:1px solid rgba(255,159,28,.4);border-radius:10px;padding:10px 14px;margin-bottom:4px">
+  <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#ff9f1c;margin-bottom:5px">⚡ Motion tokens activos — se mezclarán en cada variación</div>
+  <div id="motionStatusTokens" style="font-size:10px;font-family:monospace;color:var(--text2);line-height:1.6"></div>
+  <button onclick="clearMotionTokens();updateMotionStatusBar()" style="margin-top:6px;padding:3px 10px;font-size:10px;background:none;border:1px solid rgba(255,159,28,.4);color:#ff9f1c;border-radius:6px;cursor:pointer">✕ Clear motion</button>
+</div>
 <div class="category"><div class="category-title">Actresses (tap all you want)</div><div class="chip-grid" id="actressChips"></div></div>
 <div class="category"><div class="category-title">Physique (tap one)</div><div class="chip-grid" id="physChips"><div class="chip active">Brutal defined</div><div class="chip">Athletic</div><div class="chip">Curves</div><div class="chip">Brutal lite</div></div></div>
 <div class="category"><div class="category-title">Clothing (tap all you want)</div><div class="chip-grid" id="clothingChips"></div></div>
@@ -394,12 +304,12 @@ input[type="checkbox"]:checked::after{left:20px;background:#fff}
 <div class="category"><div class="category-title">Stylize (tap one)</div><div class="chip-grid" id="stylizeChips"><div class="chip">50</div><div class="chip active">80</div><div class="chip">120</div><div class="chip">200</div><div class="chip">250</div><div class="chip">400</div></div></div>
 <div class="inline-control"><span>Variations:</span><input type="number" id="varCount" value="4" min="1" max="20" style="max-width:80px"></div>
 <div class="sticky-actions">
-  <button class="btn btn-generate" onclick="generate()">Generate Variations →</button>
+<button class="btn btn-generate" onclick="generate()">Generate Variations →</button>
 </div>
 <div id="results"></div>
 </div>
 
-<!-- ═══ COMP ════════════════════════════════════════════════════ -->
+<!-- === COMP === -->
 <div class="section" id="comp">
 <span class="label">Compare Experiments</span>
 <div id="compareList"></div>
@@ -407,7 +317,7 @@ input[type="checkbox"]:checked::after{left:20px;background:#fff}
 <div id="compareResult"></div>
 </div>
 
-<!-- ═══ BLOCKS ══════════════════════════════════════════════════ -->
+<!-- === BLOCKS === -->
 <div class="section" id="blocks">
 <span class="label">Block Library <span class="blocks-badge">NEW v5</span></span>
 <div id="blockList"></div>
@@ -419,18 +329,22 @@ input[type="checkbox"]:checked::after{left:20px;background:#fff}
   <textarea id="importAreaText" placeholder="Paste JSON array of blocks here..."></textarea>
   <button class="btn btn-generate" onclick="confirmImport()" style="width:100%;margin-top:8px">Import</button>
 </div>
+
 <span class="label">Import Block</span>
-<textarea id="blockImport" placeholder="Paste complete Midjourney prompt here..." style="min-height:80px;"></textarea>
-<div class="inline-control" style="margin-top:8px">
+<textarea id="blockImport" placeholder="Paste complete Midjourney prompt here..." style="min-height:90px;"></textarea>
+<div class="inline-control" style="margin-top:8px;">
   <span>Name:</span>
-  <input type="text" id="blockName" placeholder="Supergirl Golden Hour" style="flex:1">
+  <input type="text" id="blockName" placeholder="Supergirl Golden Hour" style="flex:1;">
 </div>
-<button class="btn btn-kimi" onclick="importBlock()" style="width:100%;margin:12px 0">🧱 Parse &amp; Save Block</button>
-<div id="mixerPanel" style="display:none">
+<button class="btn btn-kimi" onclick="importBlock()" style="width:100%;margin:12px 0;">🧱 Parse &amp; Save Block</button>
+
+<div id="mixerPanel" style="display:none;">
   <span class="label">Mixer — Base Block</span>
-  <select id="baseBlockSelect" onchange="loadMixer()" style="margin-bottom:12px"></select>
+  <select id="baseBlockSelect" onchange="loadMixer()" style="margin-bottom:12px;"></select>
+
   <span class="label">Override Sections</span>
   <div class="builder-help">Choose which block each section comes from. "Base" = keep from selected block above.</div>
+
   <div class="mixer-section">
     <div class="mixer-section-title">🟥 Character &amp; Physique <span class="toggle-btn" onclick="toggleCat('mix-body-wrap')">−</span></div>
     <div id="mix-body-wrap">
@@ -438,6 +352,7 @@ input[type="checkbox"]:checked::after{left:20px;background:#fff}
       <div class="mixer-preview" id="previewBody"></div>
     </div>
   </div>
+
   <div class="mixer-section">
     <div class="mixer-section-title">🟨 Clothing &amp; Outfit <span class="toggle-btn" onclick="toggleCat('mix-cloth-wrap')">−</span></div>
     <div id="mix-cloth-wrap">
@@ -445,6 +360,7 @@ input[type="checkbox"]:checked::after{left:20px;background:#fff}
       <div class="mixer-preview" id="previewCloth"></div>
     </div>
   </div>
+
   <div class="mixer-section">
     <div class="mixer-section-title">🟦 Lighting &amp; Camera <span class="toggle-btn" onclick="toggleCat('mix-light-wrap')">−</span></div>
     <div id="mix-light-wrap">
@@ -452,6 +368,7 @@ input[type="checkbox"]:checked::after{left:20px;background:#fff}
       <div class="mixer-preview" id="previewLight"></div>
     </div>
   </div>
+
   <div class="mixer-section">
     <div class="mixer-section-title">🟩 Background &amp; Environment <span class="toggle-btn" onclick="toggleCat('mix-bg-wrap')">−</span></div>
     <div id="mix-bg-wrap">
@@ -459,6 +376,7 @@ input[type="checkbox"]:checked::after{left:20px;background:#fff}
       <div class="mixer-preview" id="previewBg"></div>
     </div>
   </div>
+
   <div class="mixer-section">
     <div class="mixer-section-title">⬜ Negatives <span class="toggle-btn" onclick="toggleCat('mix-neg-wrap')">−</span></div>
     <div id="mix-neg-wrap">
@@ -466,6 +384,7 @@ input[type="checkbox"]:checked::after{left:20px;background:#fff}
       <div class="mixer-preview" id="previewNeg"></div>
     </div>
   </div>
+
   <div class="mixer-section">
     <div class="mixer-section-title">⚙️ Parameters <span class="toggle-btn" onclick="toggleCat('mix-params-wrap')">−</span></div>
     <div id="mix-params-wrap">
@@ -473,46 +392,87 @@ input[type="checkbox"]:checked::after{left:20px;background:#fff}
       <div class="mixer-preview" id="previewParams"></div>
     </div>
   </div>
+
   <span class="label">Assembled Prompt</span>
-  <textarea id="mixedOutput" readonly style="min-height:110px;font-size:12px;border-color:var(--kimi)"></textarea>
-  <div class="actions" style="margin-top:12px">
-    <button class="btn btn-copy" onclick="copyMixed()" style="flex:2">COPY</button>
+  <textarea id="mixedOutput" readonly style="min-height:120px;font-size:13px;font-family:monospace;border-color:var(--kimi);"></textarea>
+  <div class="actions" style="margin-top:12px;">
+    <button class="btn btn-copy" onclick="copyMixed()" style="flex:2;">COPY</button>
     <button class="btn btn-win" onclick="saveMixedToLog('win')">✅</button>
     <button class="btn btn-fail" onclick="saveMixedToLog('fail')">❌</button>
   </div>
 </div>
 </div>
 
-<!-- ═══ LOG ═════════════════════════════════════════════════════ -->
+<!-- === LOG === -->
 <div class="section" id="log">
 <span class="label">Experiment Log</span>
 <div id="logList"></div>
 </div>
 
-<!-- ═══ SETTINGS ════════════════════════════════════════════════ -->
+<!-- === MOTION MATRIX === -->
+<div class="section" id="motion">
+<span class="label">Motion Matrix <span class="blocks-badge" style="background:#ff9f1c">5-Layer · PDF</span></span>
+<div class="builder-help">Arquitectura 5 capas — selecciona tokens por capa. Se ensamblan coherentemente al prompt activo.</div>
+
+<div class="duo-grid" style="margin:8px 0" id="motionArchetypePresets">
+  <div class="duo-chip" style="border-color:#7c5cfc;color:#7c5cfc" onclick="loadMotionArchetype('guerrera')">La Guerrera</div>
+  <div class="duo-chip" style="border-color:#ff4d6d;color:#ff4d6d" onclick="loadMotionArchetype('tactica')">La Táctica</div>
+  <div class="duo-chip" style="border-color:#ff9f1c;color:#ff9f1c" onclick="loadMotionArchetype('transformada')">La Transformada</div>
+  <div class="duo-chip" style="border-color:#06d6a0;color:#06d6a0" onclick="loadMotionArchetype('protectora')">La Protectora</div>
+  <div class="duo-chip" style="border-color:#cc77ff;color:#cc77ff" onclick="loadMotionArchetype('corrupta')">La Corrupta</div>
+  <div class="duo-chip" onclick="clearMotionTokens()">✕ Clear all</div>
+</div>
+
+<div id="motionLayerContainer"></div>
+
+<div class="motion-tray" id="motionTray" style="display:none">
+  <div class="motion-tray-title">
+    <span id="motionTrayCount">Tokens (0)</span>
+    <div style="display:flex;gap:6px">
+      <button class="btn" style="padding:5px 10px;font-size:11px;background:var(--surface);border:1px solid var(--border);color:var(--text2)" onclick="toggleMotionPrompt()">▼ Prompt</button>
+      <button class="btn" style="padding:5px 10px;font-size:11px;background:var(--surface);border:1px solid #ff3366;color:#ff3366" onclick="clearMotionTokens()">✕</button>
+    </div>
+  </div>
+  <div class="motion-chips" id="motionChips"></div>
+  <div class="motion-output" id="motionOutput" style="display:none"></div>
+</div>
+
+<div class="sticky-actions">
+  <div style="font-size:10px;color:var(--text3);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px">⚡ Assembled prompt preview:</div>
+  <div id="motionLivePreview" style="font-size:11px;font-family:monospace;color:#ff9f1c;background:var(--surface2);border:1px solid rgba(255,159,28,.3);border-radius:8px;padding:8px 10px;min-height:32px;max-height:80px;overflow-y:auto;line-height:1.6;margin-bottom:10px;word-break:break-all">(select tokens above)</div>
+  <div style="display:flex;gap:8px">
+    <button class="btn" style="flex:2;background:#ff9f1c;color:#000;font-weight:700" onclick="applyMotionToForge()">⚡ Inject → Forge</button>
+    <button class="btn" style="flex:1;background:var(--surface2);border:2px solid #ff9f1c;color:#ff9f1c" onclick="copyMotionPrompt()">Copy</button>
+  </div>
+  <button class="btn" style="width:100%;margin-top:8px;background:var(--surface2);border:2px solid var(--accent2);color:var(--accent2)" onclick="buildAndLogMotion()">⚡ Build + Log (sin Forge)</button>
+</div>
+<div id="motionResult"></div>
+</div>
+
+<!-- === SETTINGS === -->
 <div class="section" id="settings">
 <span class="label">Cloud Backend</span>
-<div class="toggle-row"><div class="toggle-label">Use Cloud Mode<small>Send requests to Render backend</small></div><input type="checkbox" id="cloudToggle" onchange="saveCloudConfig()"></div>
+<div class="toggle-row"><div class="toggle-label">Use Cloud Mode<small>Send requests to Render backend + Kimi API</small></div><input type="checkbox" id="cloudToggle" onchange="saveCloudConfig()"></div>
 <span class="label">Backend URL</span>
-<input type="text" id="backendUrl" placeholder="https://visuallab-pro.onrender.com" onchange="saveCloudConfig()">
-<span class="label">API Secret <small style="color:var(--text3);text-transform:none;letter-spacing:0">(opcional — dejar en blanco)</small></span>
-<input type="text" id="apiSecret" placeholder="(opcional)" onchange="saveCloudConfig()">
-<div class="tip-box" style="margin-top:16px">
-<k>Setup:</k><br>
-1. Backend URL: <b>https://visuallab-pro.onrender.com</b><br>
-2. API Secret: dejar en blanco (no requerido)<br>
-3. Enable Cloud Mode → Test Connection
+<input type="text" id="backendUrl" placeholder="https://visual-lab-api.onrender.com" onchange="saveCloudConfig()">
+<span class="label">API Secret</span>
+<input type="text" id="apiSecret" placeholder="vl-pro-secret-key" onchange="saveCloudConfig()">
+<div class="tip-box" style="margin-top:20px">
+<k>How to use:</k><br>
+1. Deploy backend to Render<br>
+2. Copy URL + API secret from Render dashboard<br>
+3. Paste here and enable Cloud Mode<br>
+4. "Native" and "Enhance" will call the real LLM
 </div>
 <span class="label">Connection Test</span>
-<button class="btn btn-kimi-generate" onclick="testConnection()" style="margin:0">Test Connection →</button>
-<button class="cloud-btn" onclick="showCloudSettings()" style="width:100%;margin-top:8px">☁️ Cloud Sync Settings</button>
+<button class="btn btn-kimi" onclick="testConnection()" style="width:100%">Test Connection →</button>
+<button class="cloud-btn" onclick="showCloudSettings()" style="width:100%">☁️ Cloud Sync Settings</button>
 <div id="connResult" style="margin-top:12px"></div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-
 var ACTRESSES = [
   'Anya Taylor-Joy','Tessa Thompson','Zoe Saldana','Gal Gadot','Lupita Nyongo',
   'Priyanka Chopra','Salma Hayek','Eva Green','Cate Blanchett','Charlize Theron',
@@ -924,7 +884,10 @@ function saveMixedToLog(status) {
 // INIT
 // ============================================================
 document.addEventListener('DOMContentLoaded', function() {
-  // nav handled via inline onclick
+  var navBtns = document.querySelectorAll('.nav-btn');
+  for (var i = 0; i < navBtns.length; i++) {
+    navBtns[i].addEventListener('click', function() { switchTab(this.dataset.tab); });
+  }
 
   var sel1 = document.getElementById('subj1Actress');
   var sel2 = document.getElementById('subj2Actress');
@@ -1001,7 +964,7 @@ document.addEventListener('DOMContentLoaded', function() {
   updateBlockSelectors();
   if (blocks.length > 0) document.getElementById('mixerPanel').style.display = 'block';
 
-  showToast('Visual Lab PRO v8 · Blocks ready');
+  showToast('Visual Lab PRO v9 · Motion Matrix ready ⚡');
   setTimeout(injectCAVPanels, 100);
 });
 
@@ -1015,6 +978,7 @@ function switchTab(tab) {
   if (tab === 'log') renderLog();
   if (tab === 'comp') renderCompare();
   if (tab === 'blocks') { renderBlockList(); updateBlockSelectors(); if (blocks.length > 0) { document.getElementById('mixerPanel').style.display = 'block'; updateMixerPreview(); } }
+  if (tab === 'motion') { var mc = document.getElementById('motionLayerContainer'); if (mc && mc.children.length === 0) initMotion(); }
 }
 
 function goTo(tab) {
@@ -1279,7 +1243,22 @@ function buildFromBuilder() {
   var artifacts = [];
   for (var i = 0; i < aChips.length; i++) artifacts.push(aChips[i].textContent);
   if (artifacts.length > 0) { parts.push('holding ' + artifacts.join(', ')); }
-  var prompt = parts.join(', ') + ' --ar 9:20 --raw --stylize ' + st + ' --c 15 --v 8.1';
+
+  // ⚡ MOTION desc tokens — injected after all content, before params
+  var motionAllB    = Array.from(MOTION_SELECTED);
+  var motionDescB   = motionAllB.filter(function(t) { return !t.startsWith('--'); });
+  var motionParamsB = motionAllB.filter(function(t) { return t.startsWith('--'); });
+  if (motionDescB.length > 0) parts.push(motionDescB.join(', '));
+
+  // Base params
+  var baseParamsB = ' --ar 9:20 --raw --stylize ' + st + ' --c 15 --v 8.1';
+  // Merge motion params (no duplicates)
+  motionParamsB.forEach(function(mp) {
+    var flag = mp.split(/\s+/)[0];
+    if (baseParamsB.indexOf(flag) === -1) baseParamsB += ' ' + mp;
+  });
+
+  var prompt = parts.join(', ') + baseParamsB;
   var tokenCount = prompt.split(/\s+/).length;
   var box = document.getElementById('builderResult');
   box.innerHTML = '';
@@ -1341,27 +1320,53 @@ function generate() {
   var lights = getMultiActive('lightingChips');
   var c = getSingleActive('chaosChips') || '15';
   var st = getSingleActive('stylizeChips') || '80';
+
+  // Motion tokens — read global state directly
+  var motionAll    = Array.from(MOTION_SELECTED);
+  var motionDesc   = motionAll.filter(function(t) { return !t.startsWith('--'); });
+  var motionParams = motionAll.filter(function(t) { return t.startsWith('--'); });
+
   var results = [];
   for (var i = 0; i < n; i++) {
-    var p = base;
+    // Strip any existing --params from base (they'll be rebuilt)
+    var baseClean = base.replace(/\s+--\S+(\s+\S+)?/g, '').trim();
+    var p = baseClean;
     var actress = pickRandom(actresses);
     var clothing = pickRandom(cloths);
     var setting = pickRandom(settings);
     var light = pickRandom(lights);
     var changed = [];
+
     var physText = '';
     if (phys === 'Brutal defined') { physText = 'hyper-exaggerated visible musculature, defined rectus abdominis with deep separations, serratus anterior fingers, oblique ridges, vascular lower abdomens, pores visible, sweat beads, skin texture max, no smoothing'; }
     else if (phys === 'Athletic') { physText = 'low-waist exposing defined rectus abdominis, serratus visible, athletic build, real skin texture'; }
     else if (phys === 'Brutal lite') { physText = 'defined abs, athletic build, real skin texture'; }
     else { physText = 'low-waist, defined midsection, real skin grain'; }
     if (p.indexOf('abs') === -1 && p.indexOf('musculature') === -1) { p += ', ' + physText; changed.push(phys); }
+
+    // ⚡ MOTION desc tokens injected here — after physique, before clothing/setting
+    if (motionDesc.length > 0) {
+      p += ', ' + motionDesc.join(', ');
+      changed.push('Motion[' + motionDesc.length + ']');
+    }
+
     if (actress) { var desc = ACTRESS_DESC[actress] || ''; p += ', ' + actress + (desc ? ' — ' + desc : ''); changed.push(actress.split(' ')[0]); }
     if (clothing) { p += ', ' + clothing; changed.push(clothing); }
     if (setting) { p += ', ' + setting; changed.push(setting); }
     if (light) { p += ', ' + light; changed.push(light); }
     if (kimi) { p = optimizeKimi(p); }
+
+    // Build params — motion params override Vars params where they conflict
     var ar = arL ? ' --ar 9:20' : '';
-    p += ' --raw --s ' + st + ' --c ' + c + ar + ' --v 8.1';
+    var baseParams = ' --raw --s ' + st + ' --c ' + c + ar + ' --v 8.1';
+    // Merge: start with base params, then add motion params that aren't already present
+    var finalParams = baseParams;
+    motionParams.forEach(function(mp) {
+      var flag = mp.split(/\s+/)[0];
+      if (finalParams.indexOf(flag) === -1) finalParams += ' ' + mp;
+    });
+
+    p += finalParams;
     results.push({ id: Date.now() + i, prompt: p, changed: changed.join(', ') || 'Base+Params', chaos: c, stylize: st, time: new Date().toISOString() });
   }
   renderResults(results);
@@ -1567,17 +1572,19 @@ function loadCloudConfig() {
 
 function isCloudMode() {
   var cfg = getCloudConfig();
-  return !!(cfg.enabled && cfg.url);
+  return !!(cfg.enabled && cfg.url && cfg.secret);
 }
 
 async function apiCall(endpoint, body) {
   var cfg = getCloudConfig();
-  // endpoint already includes /api/ prefix from caller
   var url = cfg.url.replace(/\/+$/, '') + endpoint;
   try {
     var resp = await fetch(url, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'X-API-Key': cfg.secret
+      },
       body: JSON.stringify(body)
     });
     if (!resp.ok) {
@@ -1593,13 +1600,12 @@ async function apiCall(endpoint, body) {
 
 async function testConnection() {
   var cfg = getCloudConfig();
-  if (!cfg.url) { showToast('Fill Backend URL first'); return; }
+  if (!cfg.url || !cfg.secret) { showToast('Fill URL and Secret first'); return; }
   showToast('Testing...');
   try {
-    var resp = await fetch(cfg.url.replace(/\/+$/, '') + '/api/health');
+    var resp = await fetch(cfg.url.replace(/\/+$/, '') + '/health');
     var data = await resp.json();
-    document.getElementById('connResult').innerHTML = '<div class="tip-box" style="border-color:var(--accent2)"><k>✅ OK:</k> Backend online · v' + (data.version||'?') + '</div>';
-    showToast('Connected!');
+    document.getElementById('connResult').innerHTML = '<div class="tip-box" style="border-color:var(--accent2)"><k>OK:</k> Backend ' + (data.kimi_configured ? 'ready + LLM connected' : 'ready but NO API key') + '</div>';
   } catch(e) {
     document.getElementById('connResult').innerHTML = '<div class="tip-box" style="border-color:var(--accent)"><k>FAIL:</k> ' + e.message + '</div>';
   }
@@ -2195,27 +2201,435 @@ function injectCAVPanels() {
   buildCAVPanel('cav-blocks-panel', 'cav-preview-blocks');
 }
 
+// ============================================================
+// MOTION MATRIX — 5-Layer Action / Expression / Params System
+// Architecture based on PDF: "Arquitectura de Interfaces Modulares"
+// ============================================================
+
+var MOTION_LAYERS = [
+  {
+    id: 'actions', layerNum: 2, label: 'L2 · Acción Cinética', color: '#ff9f1c',
+    desc: 'Verbos activos + modificadores de movimiento + física visual',
+    subcats: [
+      {
+        label: 'Vuelo',
+        physics: 'Perspectiva contrapicada · Asimetría aerodinámica · Tensión musculatura extensora',
+        tokens: ['ascending flight','supersonic ascent','vertical launch','aerial charge','hover','zero-gravity drift','propulsion energy trail','cape trailing wind blur','diving at Mach speed']
+      },
+      {
+        label: 'Velocidad Ultrasónica',
+        physics: 'Cono de Mach · Prandtl-Glauert condensation cloud · Distorsión térmica · Aberración cromática bordes',
+        tokens: ['ultrasonic sprint','speed force aura','sonic boom silhouette','Mach cone formation','Prandtl-Glauert vapor shock ring','thermal atmospheric distortion','chromatic aberration leading edges','plasma friction surface edges','afterimage trail','dust vortex sprint','velocity lines','ground crack sprint path']
+      },
+      {
+        label: 'Impacto / Choque',
+        physics: 'Deformación geométrica entorno · Transferencia energía cinética · Cráteres de disipación',
+        tokens: ['mid-air collision','shockwave impact','kinetic punch','ground slam','wall smash','explosive shockwave ring','crater formation on impact','force of impact debris cloud','structural collapse around character']
+      },
+      {
+        label: 'Aterrizaje Forzoso',
+        physics: 'Entropía visual estructurada · Deformación topográfica · Multiplicador complejidad partículas',
+        tokens: ['forced crash descent','emergency landing','debris field landing','crater touchdown','rubble explosion landing','impact sparks','dust wall expansion','thousands of sharp metallic fragments suspended mid-air','directional sparks hyperdetailed','volumetric backlit smoke particles']
+      }
+    ]
+  },
+  {
+    id: 'expressions', layerNum: 3, label: 'L3 · Expresión FACS', color: '#ff3366',
+    desc: 'Micro-expresiones biomecánicas específicas — NO genéricas. FACS mapping.',
+    subcats: [
+      {
+        label: 'Vuelo / Hover',
+        physics: 'Gravedad controlada → estética majestuosa, previene muecas de dolor innecesarias',
+        tokens: ['serenely focused expression','panoramic gaze','relaxed facial muscles against wind resistance','heroic composure','warrior calm','eyes of purpose','silent strength']
+      },
+      {
+        label: 'Sprint / Velocidad',
+        physics: 'Alta tensión biomecánica → conecta extremidades con tensión cráneo-facial',
+        tokens: ['jaw clenching','narrowed eyes locked on horizon','marked veins neck and temples','explosive muscular tension face','determined set jaw','battle focus grimace','unbreakable focus']
+      },
+      {
+        label: 'Velocidad Ultrasónica',
+        physics: 'Fuerza G extrema → traduce aerodinámica a comportamiento tejidos blandos (PDF §Fenomenología)',
+        tokens: ['skin and soft tissue pulled back by G-force','semi-closed eyelids resisting wind pressure','mouth distorted by aerodynamic pressure','deformed cheeks g-force','squinting against hypersonic wind','facial tissue drag extreme velocity']
+      },
+      {
+        label: 'Choque / Impacto',
+        physics: 'Transferencia energía cinética → elimina neutralidad plástica, ancla rostro al evento',
+        tokens: ['visceral collision expression','reflex eye contraction from flash','spasmodic facial muscles','facial asymmetry from force differential','defensive body language impact','war cry expression','berserker expression','teeth gritted combat rage']
+      },
+      {
+        label: 'Aterrizaje + Debris',
+        physics: 'Caos fragmentario · Riesgo perforación → sincroniza iluminación escombros con sombras en facciones',
+        tokens: ['calculated panic gaze','face marked by micro-debris','deeply furrowed brow shielding eyes','protective squint against dust and impacts','controlled agony endurance face','pain suppression expression','muscle strain exertion']
+      },
+      {
+        label: 'Frialdad / Amenaza',
+        physics: 'Tensión ambiental nula → estética predatoria sin distorsión G',
+        tokens: ['cold calculated gaze','predator stillness','villain composure','zero mercy eyes','apex predator expression','emotionless threat','iron will stoic resolve']
+      }
+    ]
+  },
+  {
+    id: 'environment', layerNum: 4, label: 'L4 · Entorno Reactivo', color: '#33ff88',
+    desc: 'Consecuencias físicas de la acción — el entorno reacciona al sujeto, no lo ignora',
+    subcats: [
+      {
+        label: 'Iluminación Unificada',
+        physics: 'Forzar iluminación global coherente — previene fuentes de luz separadas que rompen inmersión (PDF §Motor Coherencia)',
+        tokens: ['impact flash illumination unified scene','rim lighting motion','volumetric god rays through debris','explosion practical light','energy blast glow','chiaroscuro debris translucency','specular reflection on fragments','cast shadows debris on ground and subject','backlit silhouette action']
+      },
+      {
+        label: 'Composición Caótica',
+        physics: 'Modelos buscan simetría por default → inyectar caos compositivo para transmitir violencia termodinámica',
+        tokens: ['kinetic off-axis composition','fractured rule of thirds','deep Dutch angle','asymmetric catastrophic framing','dynamic foreground subject camera locked to entity','extreme dynamic close-up subject','worm\'s eye view impact','bird\'s eye crash descent','tracking shot blur']
+      },
+      {
+        label: 'Física de Entorno',
+        physics: 'Sujeto integrado en entorno — no superpuesto como pegatina sobre fondo estático',
+        tokens: ['dust particles raised by footsteps','ground deformation kinetic impact','deep trenches in earth crater','crushed asphalt surface','volumetric dust cloud expanding','structural damage environment','shockwave atmospheric distortion','vanishing point lines extending horizon','environment deformation velocity vector']
+      }
+    ]
+  },
+  {
+    id: 'params', layerNum: 5, label: 'L5 · Redes Prehechas', color: '#3388ff',
+    desc: 'Parámetros algorítmicos — personalidad técnica total del renderizado (PDF §Inyección Paramétrica)',
+    subcats: [
+      {
+        label: 'A — Fotorrealismo Crudo',
+        physics: 'Reportaje bélico · Bajo stylize = escombros afilados sin suavizado · Alto chaos = dispersión impredecible',
+        tokens: ['--style raw','--stylize 50','--chaos 40','--v 8.1','--q 2']
+      },
+      {
+        label: 'B — Epopeya Cinemática HDR',
+        physics: '21:9 acomoda estelas supersónicas · Alto stylize = efectos aerodinámicos heroicos exagerados',
+        tokens: ['--stylize 750','--c 10','--ar 21:9','--v 8.1','--q 2']
+      },
+      {
+        label: 'C — Imperfección Analógica',
+        physics: '35mm dañada · --weird 1500 = representaciones físicas inusuales destrucción · Cámara impactada',
+        tokens: ['--style raw','--stylize 100','--weird 1500','--ar 16:9','--v 8.1']
+      },
+      {
+        label: 'D — Concept Art Digital',
+        physics: 'Motor Niji · Sprint = pinceladas direccionales enfatizando cinética muscular · Líneas de acción exageradas',
+        tokens: ['--niji 6','--style expressive','--s 400']
+      },
+      {
+        label: 'Negativos',
+        physics: 'Eliminar fallas comunes: neutralidad facial, pose estática, fusión anatómica',
+        tokens: ['--no blur face','--no static pose','--no plain background','--no symmetrical composition','--no plastic expression','--no anatomy fusion environment','--no soft lighting']
+      }
+    ]
+  }
+];
+
+var MOTION_ARCHETYPES = {
+  guerrera: {
+    name: 'La Guerrera',
+    color: '#7c5cfc',
+    actionBadge: 'ascending flight supersonic ascent',
+    exprBadge: 'jaw clenching war cry expression',
+    tokens: ['ascending flight','supersonic ascent','propulsion energy trail','cape trailing wind blur','jaw clenching','marked veins neck and temples','battle focus grimace','rim lighting motion','kinetic off-axis composition','--stylize 750','--c 10','--ar 21:9','--v 8.1','--q 2','--no static pose','--no soft lighting']
+  },
+  tactica: {
+    name: 'La Táctica',
+    color: '#ff4d6d',
+    actionBadge: 'mid-air collision kinetic punch',
+    exprBadge: 'cold calculated gaze predator stillness',
+    tokens: ['mid-air collision','kinetic punch','explosive shockwave ring','crater formation on impact','cold calculated gaze','predator stillness','zero mercy eyes','impact flash illumination unified scene','deep Dutch angle','asymmetric catastrophic framing','--style raw','--stylize 50','--chaos 40','--v 8.1','--q 2']
+  },
+  transformada: {
+    name: 'La Transformada',
+    color: '#ff9f1c',
+    actionBadge: 'ultrasonic sprint Mach cone',
+    exprBadge: 'skin pulled back G-force',
+    tokens: ['ultrasonic sprint','speed force aura','Mach cone formation','Prandtl-Glauert vapor shock ring','chromatic aberration leading edges','skin and soft tissue pulled back by G-force','semi-closed eyelids resisting wind pressure','mouth distorted by aerodynamic pressure','velocity lines','vanishing point lines extending horizon','--stylize 750','--c 10','--ar 21:9','--v 8.1','--q 2']
+  },
+  protectora: {
+    name: 'La Protectora',
+    color: '#06d6a0',
+    actionBadge: 'forced crash descent debris field',
+    exprBadge: 'calculated panic gaze protective squint',
+    tokens: ['forced crash descent','debris field landing','crater touchdown','thousands of sharp metallic fragments suspended mid-air','directional sparks hyperdetailed','calculated panic gaze','face marked by micro-debris','deeply furrowed brow shielding eyes','protective squint against dust and impacts','dust wall expansion','chiaroscuro debris translucency','fractured rule of thirds','--style raw','--stylize 100','--weird 1500','--ar 16:9','--v 8.1']
+  },
+  corrupta: {
+    name: 'La Corrupta',
+    color: '#cc77ff',
+    actionBadge: 'ground slam crater formation',
+    exprBadge: 'zero mercy eyes villain composure',
+    tokens: ['ground slam','crater formation on impact','explosive shockwave ring','structural collapse around character','visceral collision expression','zero mercy eyes','villain composure','spasmodic facial muscles','explosion practical light','specular reflection on fragments','worm\'s eye view impact','asymmetric catastrophic framing','--style raw','--stylize 50','--chaos 40','--v 8.1','--q 2','--no plastic expression','--no soft lighting','--no symmetrical composition']
+  }
+};
+
+var MOTION_SELECTED = new Set();
+var motionActiveSubs = {};
+var motionPromptVisible = false;
+
+function initMotion() {
+  var container = document.getElementById('motionLayerContainer');
+  if (!container) return;
+  container.innerHTML = '';
+  MOTION_LAYERS.forEach(function(layer) {
+    motionActiveSubs[layer.id] = 0;
+    var div = document.createElement('div');
+    div.className = 'motion-layer';
+    div.id = 'motion-layer-' + layer.id;
+
+    // Header
+    var header = document.createElement('div');
+    header.className = 'motion-layer-header';
+    header.innerHTML = '<div class="motion-layer-title"><span class="motion-layer-badge" style="background:' + layer.color + '">' + 'L' + layer.layerNum + '</span><span>' + layer.label + '</span></div><span style="color:var(--text3);font-size:16px">−</span>';
+    header.onclick = function() {
+      var body = div.querySelector('.motion-layer-body');
+      var isCollapsed = body.style.display === 'none';
+      body.style.display = isCollapsed ? 'block' : 'none';
+      header.querySelector('span:last-child').textContent = isCollapsed ? '−' : '+';
+    };
+    div.appendChild(header);
+
+    var body = document.createElement('div');
+    body.className = 'motion-layer-body';
+
+    // Subcategory bar
+    var subcatBar = document.createElement('div');
+    subcatBar.className = 'motion-subcat-bar';
+    subcatBar.id = 'motion-subcat-bar-' + layer.id;
+    layer.subcats.forEach(function(sub, idx) {
+      var pill = document.createElement('span');
+      pill.className = 'motion-subcat' + (idx === 0 ? ' active' : '');
+      pill.textContent = sub.label;
+      pill.onclick = function() {
+        var pills = subcatBar.querySelectorAll('.motion-subcat');
+        pills.forEach(function(p) { p.classList.remove('active'); });
+        pill.classList.add('active');
+        motionActiveSubs[layer.id] = idx;
+        renderMotionTokens(layer);
+      };
+      subcatBar.appendChild(pill);
+    });
+    body.appendChild(subcatBar);
+
+    // Physics note
+    var physDiv = document.createElement('div');
+    physDiv.className = 'motion-physics';
+    physDiv.id = 'motion-physics-' + layer.id;
+    physDiv.textContent = layer.subcats[0].physics;
+    body.appendChild(physDiv);
+
+    // Token grid
+    var grid = document.createElement('div');
+    grid.className = 'motion-token-grid';
+    grid.id = 'motion-tokens-' + layer.id;
+    body.appendChild(grid);
+    div.appendChild(body);
+    container.appendChild(div);
+    renderMotionTokens(layer);
+  });
+}
+
+function renderMotionTokens(layer) {
+  var grid = document.getElementById('motion-tokens-' + layer.id);
+  var physDiv = document.getElementById('motion-physics-' + layer.id);
+  if (!grid) return;
+  grid.innerHTML = '';
+  var subcatIdx = motionActiveSubs[layer.id] || 0;
+  var subcat = layer.subcats[subcatIdx];
+  if (!subcat) return;
+  if (physDiv) physDiv.textContent = subcat.physics;
+  var colorClass = layer.id === 'expressions' ? 'expr' : layer.id === 'environment' ? 'env' : layer.id === 'params' ? 'param' : '';
+  subcat.tokens.forEach(function(token) {
+    var btn = document.createElement('span');
+    btn.className = 'motion-token ' + colorClass + (MOTION_SELECTED.has(token) ? ' active' : '');
+    btn.textContent = token;
+    btn.onclick = function() {
+      if (MOTION_SELECTED.has(token)) {
+        MOTION_SELECTED.delete(token);
+        btn.classList.remove('active');
+      } else {
+        MOTION_SELECTED.add(token);
+        btn.classList.add('active');
+      }
+      updateMotionTray();
+    };
+    grid.appendChild(btn);
+  });
+}
+
+function updateMotionTray() {
+  var tray    = document.getElementById('motionTray');
+  var chips   = document.getElementById('motionChips');
+  var count   = document.getElementById('motionTrayCount');
+  var output  = document.getElementById('motionOutput');
+  var preview = document.getElementById('motionLivePreview');
+  if (!tray) return;
+
+  var builtPrompt = buildMotionPromptString();
+
+  // Live preview — always visible
+  if (preview) {
+    preview.textContent = builtPrompt || '(select tokens above)';
+    preview.style.color = MOTION_SELECTED.size ? '#ff9f1c' : 'var(--text3)';
+  }
+
+  if (MOTION_SELECTED.size === 0) {
+    tray.style.display = 'none';
+    return;
+  }
+  tray.style.display = 'block';
+  count.textContent = 'Tokens (' + MOTION_SELECTED.size + ')';
+  chips.innerHTML = '';
+  MOTION_SELECTED.forEach(function(token) {
+    var chip = document.createElement('span');
+    chip.className = 'motion-chip';
+    chip.innerHTML = token + '<button class="motion-chip-x" onclick="removeMotionToken(\'' + token.replace(/\\/g,'\\\\').replace(/'/g,"\\'") + '\')">×</button>';
+    chips.appendChild(chip);
+  });
+  if (output && motionPromptVisible) output.textContent = builtPrompt;
+  updateMotionStatusBar();
+}
+
+function updateMotionStatusBar() {
+  var bar = document.getElementById('motionStatusBar');
+  var tokens = document.getElementById('motionStatusTokens');
+  var barB = document.getElementById('motionStatusBarBuilder');
+  var countB = document.getElementById('motionStatusBuilderCount');
+  var hasMotion = MOTION_SELECTED.size > 0;
+  if (bar) bar.style.display = hasMotion ? 'block' : 'none';
+  if (barB) barB.style.display = hasMotion ? 'block' : 'none';
+  if (tokens) {
+    var descT = Array.from(MOTION_SELECTED).filter(function(t){ return !t.startsWith('--'); });
+    var paramT = Array.from(MOTION_SELECTED).filter(function(t){ return t.startsWith('--'); });
+    tokens.textContent = (descT.length ? '⚡ ' + descT.join(', ') : '') + (paramT.length ? '  |  ' + paramT.join(' ') : '');
+  }
+  if (countB) countB.textContent = MOTION_SELECTED.size;
+}
+
+function copyMotionPrompt() {
+  var p = buildMotionPromptString();
+  if (!p) { showToast('No tokens selected'); return; }
+  copyText(p);
+}
+
+function removeMotionToken(token) {
+  MOTION_SELECTED.delete(token);
+  // deactivate chip in any visible grid
+  document.querySelectorAll('.motion-token').forEach(function(el) {
+    if (el.textContent === token) el.classList.remove('active');
+  });
+  updateMotionTray();
+}
+
+function toggleMotionPrompt() {
+  motionPromptVisible = !motionPromptVisible;
+  var output = document.getElementById('motionOutput');
+  if (output) output.style.display = motionPromptVisible ? 'block' : 'none';
+  if (motionPromptVisible) updateMotionTray();
+}
+
+function clearMotionTokens() {
+  MOTION_SELECTED.clear();
+  document.querySelectorAll('.motion-token.active').forEach(function(el) { el.classList.remove('active'); });
+  updateMotionTray();
+}
+
+function loadMotionArchetype(key) {
+  var arch = MOTION_ARCHETYPES[key];
+  if (!arch) return;
+  clearMotionTokens();
+  arch.tokens.forEach(function(t) { MOTION_SELECTED.add(t); });
+  // Re-render all token grids to reflect selection
+  MOTION_LAYERS.forEach(function(layer) { renderMotionTokens(layer); });
+  updateMotionTray();
+  showToast(arch.name + ' loaded');
+}
+
+function buildMotionPromptString() {
+  var tokens = Array.from(MOTION_SELECTED);
+  var descTokens = tokens.filter(function(t) { return !t.startsWith('--'); });
+  var paramTokens = tokens.filter(function(t) { return t.startsWith('--'); });
+  var prompt = descTokens.join(', ');
+  if (paramTokens.length) prompt += ' ' + paramTokens.join(' ');
+  return prompt;
+}
+
+function applyMotionToForge() {
+  if (MOTION_SELECTED.size === 0) { showToast('Select tokens first'); return; }
+  var allTokens = Array.from(MOTION_SELECTED);
+  var descTokens  = allTokens.filter(function(t) { return !t.startsWith('--'); });
+  var paramTokens = allTokens.filter(function(t) { return t.startsWith('--'); });
+  var forge = document.getElementById('basePrompt');
+  if (!forge) { showToast('No forge target'); return; }
+  var existing = forge.value.trim();
+
+  // Split existing into desc part and param part
+  var paramIdx = existing.indexOf(' --');
+  var existDesc   = paramIdx > -1 ? existing.slice(0, paramIdx) : existing;
+  var existParams = paramIdx > -1 ? existing.slice(paramIdx) : '';
+
+  // Build new desc: append motion desc tokens (skip if already present)
+  var newDesc = existDesc;
+  descTokens.forEach(function(t) {
+    if (newDesc.toLowerCase().indexOf(t.toLowerCase()) === -1) {
+      newDesc = newDesc ? newDesc + ', ' + t : t;
+    }
+  });
+
+  // Build new params: keep existing, add motion params that aren't already present
+  var newParams = existParams;
+  paramTokens.forEach(function(t) {
+    var flag = t.split(/\s+/)[0]; // e.g. "--style"
+    if (newParams.indexOf(flag) === -1) {
+      newParams = newParams + ' ' + t;
+    }
+  });
+
+  forge.value = newDesc + newParams;
+  showToast('⚡ Motion → Forge (' + descTokens.length + ' desc, ' + paramTokens.length + ' params)');
+}
+
+function buildAndLogMotion() {
+  if (MOTION_SELECTED.size === 0) { showToast('Select tokens first'); return; }
+  var prompt = buildMotionPromptString();
+  var tokens = Array.from(MOTION_SELECTED);
+  var paramTokens = tokens.filter(function(t) { return t.startsWith('--'); });
+  var chaosMatch = (paramTokens.join(' ').match(/--c(?:haos)?\s*(\d+)/) || [])[1] || '15';
+  var stylizeMatch = (paramTokens.join(' ').match(/--s(?:tylize)?\s*(\d+)/) || [])[1] || '250';
+  var item = {
+    id: Date.now(),
+    prompt: prompt,
+    changed: 'Motion[' + MOTION_SELECTED.size + 'tokens]',
+    status: null,
+    chaos: chaosMatch,
+    stylize: stylizeMatch,
+    time: new Date().toISOString(),
+    loggedAt: new Date().toISOString()
+  };
+  exps.unshift(item);
+  save();
+  var box = document.getElementById('motionResult');
+  box.innerHTML = '';
+  var card = document.createElement('div');
+  card.className = 'prompt-card';
+  card.innerHTML =
+    '<div class="meta"><span style="color:#ff9f1c">⚡ Motion Output</span><span>~' + prompt.split(/\s+/).length + ' tokens</span></div>' +
+    '<div class="prompt-text" style="border-color:rgba(255,159,28,.4)">' + esc(prompt) + '</div>' +
+    '<div class="actions" style="margin-top:12px">' +
+    '<button class="btn btn-copy" style="background:#ff9f1c" onclick="copyText(\'' + esc(prompt.replace(/\\/g,'\\\\').replace(/'/g,"\\'")) + '\')">Copy</button>' +
+    '<button class="btn btn-win" onclick="logResult(' + item.id + ', \'win\')">✅</button>' +
+    '<button class="btn btn-fail" onclick="logResult(' + item.id + ', \'fail\')">❌</button>' +
+    '</div>';
+  box.appendChild(card);
+  showToast('Motion built + logged ⚡');
+}
+
 injectCAVCSS();
 
-
-
-// ── CLOUD URL AUTO-DETECT ──
-(function() {
-  var cfg = getCloudConfig();
-  var isRemote = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
-  if (isRemote) {
-    var autoUrl = window.location.origin;
-    if (!cfg.url) {
-      cfg.url = autoUrl;
-      cfg.enabled = true;
-      localStorage.setItem('vlpro_cloud', JSON.stringify(cfg));
-    }
-    // Always refresh UI fields
-    loadCloudConfig();
-    document.getElementById('hdrStatus').textContent = 'cloud';
-  }
-})();
-
+// Init Motion Matrix (deferred so DOM is fully ready)
+setTimeout(function() {
+  var mc = document.getElementById('motionLayerContainer');
+  if (mc && mc.children.length === 0) initMotion();
+  updateMotionTray();
+}, 200);
 </script>
 </body>
 </html>
